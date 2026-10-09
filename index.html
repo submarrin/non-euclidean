@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body style="margin:0">
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"></head><body style="margin:0">
 <title>Non-Euclidean Thesis Companion</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -40,6 +40,7 @@
   color-scheme:dark;
 }
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 html{scroll-behavior:smooth}
 @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
 body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:1.0625rem;line-height:1.65}
@@ -47,14 +48,15 @@ a{color:var(--accent)}
 a:focus-visible,button:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
 
 /* ---------- header + tabs ---------- */
-.masthead{padding:1.25rem 16px .75rem;max-width:72rem;margin:0 auto;display:flex;flex-wrap:wrap;gap:.5rem 1.5rem;align-items:baseline;justify-content:space-between}
+.masthead{padding:1.25rem 16px .75rem;max-width:84rem;margin:0 auto;display:flex;flex-wrap:wrap;gap:.5rem 1.5rem;align-items:baseline;justify-content:space-between}
 .masthead h1{font-family:var(--f-display);font-weight:600;font-size:clamp(1.5rem,4vw,2.1rem);line-height:1.1;margin:0;text-wrap:balance}
 .masthead p{margin:.2rem 0 0;font-family:var(--f-ui);font-size:.8rem;color:var(--muted);letter-spacing:.02em}
 .lang{font-family:var(--f-ui);font-size:.8rem;color:var(--muted);display:flex;gap:.4rem;align-items:center}
 .lang select{font:inherit;color:var(--ink);background:var(--sheet);border:1px solid var(--rule);border-radius:4px;padding:.15rem .3rem}
 .tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--paper);border-bottom:1px solid var(--rule)}
-.tabs-inner{max-width:72rem;margin:0 auto;display:flex;gap:.25rem;overflow-x:auto;padding:0 16px;scrollbar-width:thin}
-.tab{flex:0 0 auto;font-family:var(--f-ui);font-size:.85rem;color:var(--muted);background:none;border:0;border-bottom:2px solid transparent;padding:.7rem .6rem .6rem;cursor:pointer;white-space:nowrap;display:flex;gap:.4rem;align-items:baseline}
+.tabs-inner{max-width:84rem;margin:0 auto;display:flex;gap:0 .1rem;overflow-x:auto;padding:0 16px;scrollbar-width:thin}
+@media (min-width:700px){.tabs-inner{flex-wrap:wrap;overflow-x:visible;justify-content:center}}
+.tab{flex:0 0 auto;font-family:var(--f-ui);font-size:.85rem;color:var(--muted);background:none;border:0;border-bottom:2px solid transparent;padding:.7rem .5rem .6rem;cursor:pointer;white-space:nowrap;display:flex;gap:.4rem;align-items:baseline}
 .tab .num{font-variant-numeric:tabular-nums;font-weight:600;color:var(--ink);opacity:.55}
 .tab:hover{color:var(--ink)}
 .tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
@@ -62,10 +64,13 @@ a:focus-visible,button:focus-visible,select:focus-visible{outline:2px solid var(
 .tab .dot{width:.4rem;height:.4rem;border-radius:50%;background:var(--draft);opacity:.7;align-self:center}
 
 /* ---------- chapter layout ---------- */
-main{max-width:72rem;margin:0 auto;padding:1.5rem 16px 4rem}
+main{max-width:84rem;margin:0 auto;padding:1.5rem 16px 4rem}
 .chapter{display:grid;grid-template-columns:minmax(0,1fr);gap:2rem}
 @media (min-width:1000px){
-  .chapter.has-toc{grid-template-columns:14rem minmax(0,1fr)}
+  .chapter.has-toc{grid-template-columns:13rem minmax(0,1fr)}
+}
+@media (min-width:1240px){
+  .chapter.has-toc .book{padding-right:13.5rem;max-width:calc(var(--measure) + 13.5rem)}
 }
 .toc{font-family:var(--f-ui);font-size:.82rem;line-height:1.4}
 .toc-inner{position:sticky;top:calc(env(safe-area-inset-top,0px) + 3.6rem)}
@@ -142,6 +147,19 @@ tr:last-child td{border-bottom:0}
 
 /* ---------- draft chapters ---------- */
 .draft-banner{display:flex;gap:.7rem;align-items:flex-start;background:var(--draft-soft);color:var(--ink);border-radius:4px;padding:.8rem 1rem;font-family:var(--f-ui);font-size:.88rem;line-height:1.45;margin-bottom:1.6rem}
+.draft-banner.progress{background:var(--accent-soft)}
+.draft-banner.progress strong{color:var(--accent)}
+.portrait{float:right;clear:right;width:7.5rem;margin:.35rem 0 .8rem 1.1rem;font-family:var(--f-ui);font-size:.72rem;line-height:1.35;color:var(--muted)}
+.portrait img{display:block;width:100%;height:auto;border-radius:3px;filter:grayscale(.15) sepia(.12);background:var(--fig-fill)}
+.portrait figcaption{margin-top:0;font-size:inherit;line-height:inherit;color:inherit}
+.portrait .who{display:block;color:var(--ink);font-weight:600;font-size:.8rem;margin-top:.4rem}
+.portrait .yrs{font-variant-numeric:tabular-nums}
+.portrait .credit{display:block;margin-top:.25rem;font-size:.66rem}
+.portrait .credit a{color:var(--muted)}
+@media (min-width:1240px){
+  .portrait{width:11.5rem;margin:.3rem -13.5rem 1rem 0}
+}
+@media (max-width:520px){ .portrait{width:6.2rem} }
 .draft-banner strong{color:var(--draft);text-transform:uppercase;letter-spacing:.08em;font-size:.75rem;white-space:nowrap;padding-top:.1rem}
 .sample-label{font-family:var(--f-ui);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:1.8rem 0 .5rem}
 .exercise{border:1px solid var(--rule);background:var(--sheet);border-radius:4px;padding:1rem 1.15rem}
@@ -149,7 +167,7 @@ tr:last-child td{border-bottom:0}
 .planned{font-family:var(--f-ui);font-size:.88rem;color:var(--muted);padding-left:1.2rem}
 .planned li{margin-bottom:.25rem}
 
-footer{max-width:72rem;margin:0 auto;padding:1.5rem 16px 2.5rem;border-top:1px solid var(--rule);font-family:var(--f-ui);font-size:.78rem;color:var(--muted)}
+footer{max-width:84rem;margin:0 auto;padding:1.5rem 16px 2.5rem;border-top:1px solid var(--rule);font-family:var(--f-ui);font-size:.78rem;color:var(--muted)}
 </style>
 
 <header>
@@ -179,6 +197,7 @@ footer{max-width:72rem;margin:0 auto;padding:1.5rem 16px 2.5rem;border-top:1px s
 <template id="en-ch2">
 <p class="eyebrow">Chapter 2</p>
 <h2 class="ch-title">A History of Non-Euclidean Geometry: From Antiquity to Poincaré</h2>
+<div class="draft-banner progress"><strong>In progress</strong><span>In review and being updated.</span></div>
 
 <p>The development of non-Euclidean geometry is one of the most instructive episodes in the history of mathematics: a two-thousand-year effort to <em>prove</em> a postulate culminated, paradoxically, in the proof of its <em>independence</em>. This effort also led to the discovery that the alternatives yield equally consistent geometries. This chapter traces that development, drawing on Greenberg's history of the parallel postulate [[Gre93]], the Russian historical synthesis of Laptev and Rozenfeld [[KY81]], and the modern treatments of Galperin [[Gal20]] and Sosinsky [[Sos20]].</p>
 
@@ -424,8 +443,8 @@ footer{max-width:72rem;margin:0 auto;padding:1.5rem 16px 2.5rem;border-top:1px s
 const LANG = "en";
 const UI = {
   en:{
-    draftTag:"In progress",
-    draftMsg:"In review and being updated.",
+    draftTag:"Draft",
+    draftMsg:"Content added after supervisor approval. The text below is sample text, not thesis text.",
     sampleText:"Sample text", sampleEx:"Sample exercise", planned:"Planned sections (current thesis outline)",
     contents:"Contents", chapter:"Chapter", appendix:"Appendix"
   }
@@ -479,6 +498,40 @@ const BIB = {
   RY96:"Rosenfeld & Youschkevitch, Geometry, in Encyclopedia of the History of Arabic Science (1996)",
   Sos20:"Sosinsky, On the Equivalence of Three Models of the Lobachevsky Plane (2020)"
 };
+
+/* Portraits: public domain only (licence checked on Wikimedia Commons, Oct 2026).
+   Names and years are taken from the thesis text; credit = artist/date from the Commons file page. */
+const PORTRAITS = {
+  "s2-1":   [{who:"Euclid", yrs:"", img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/7/73/Italian_-_Euclid_-_Google_Art_Project.jpg/330px-Italian_-_Euclid_-_Google_Art_Project.jpg", credit:"Jusepe de Ribera, <i>Euclid</i>, c. 1630–35", page:"https://commons.wikimedia.org/wiki/File:Italian_-_Euclid_-_Google_Art_Project.jpg"}],
+  "s2-2-1": [{who:"Proclus", yrs:"410–485 CE", img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bf/In_primum_Euclidis_elementorum_librum_01.jpg/330px-In_primum_Euclidis_elementorum_librum_01.jpg", credit:"Title page, Latin edition of Proclus' commentary on Euclid, trans. F. Barozzi, 1560", page:"https://commons.wikimedia.org/wiki/File:In_primum_Euclidis_elementorum_librum_01.jpg"},
+             {who:"Ibn al-Haytham", yrs:"", img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a2/Ibn_al-Haytham_crop.jpg/330px-Ibn_al-Haytham_crop.jpg", credit:"Frontispiece of Hevelius, <i>Selenographia</i>, 1647 (detail)", page:"https://commons.wikimedia.org/wiki/File:Ibn_al-Haytham_crop.jpg"}],
+  "s2-2-2": [{who:"Girolamo Saccheri", yrs:"1667–1733", img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/8/84/Saccheri_1733_-_Euclide_Ab_Omni_Naevo_Vindicatus.gif/330px-Saccheri_1733_-_Euclide_Ab_Omni_Naevo_Vindicatus.gif", credit:"Title page of <i>Euclides ab omni naevo vindicatus</i>, 1733", page:"https://commons.wikimedia.org/wiki/File:Saccheri_1733_-_Euclide_Ab_Omni_Naevo_Vindicatus.gif"}],
+  "s2-2-3": [{who:"Johann Heinrich Lambert", yrs:"1728–1777", img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9b/JHLambert.jpg/330px-JHLambert.jpg", credit:"Engraved portrait", page:"https://commons.wikimedia.org/wiki/File:JHLambert.jpg"}],
+  "s2-2-4": [{who:"Adrien-Marie Legendre", yrs:"1752–1833", img:"https://upload.wikimedia.org/wikipedia/commons/0/03/Legendre.jpg", credit:"Julien-Léopold Boilly, 1820", page:"https://commons.wikimedia.org/wiki/File:Legendre.jpg"}],
+  "s2-3-1": [{who:"Carl Friedrich Gauss", yrs:"1777–1855", img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ec/Carl_Friedrich_Gauss_1840_by_Jensen.jpg/330px-Carl_Friedrich_Gauss_1840_by_Jensen.jpg", credit:"Christian Albrecht Jensen, 1840", page:"https://commons.wikimedia.org/wiki/File:Carl_Friedrich_Gauss_1840_by_Jensen.jpg"}],
+  "s2-3-2": [{who:"Nikolai Ivanovich Lobachevsky", yrs:"1792–1856", img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4d/Lobachevsky_03_crop.jpg/330px-Lobachevsky_03_crop.jpg", credit:"Lev Kryukov, 1839", page:"https://commons.wikimedia.org/wiki/File:Lobachevsky_03_crop.jpg"}],
+  "s2-3-4": [{who:"Bernhard Riemann", yrs:"1826–1866", img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/8/82/Georg_Friedrich_Bernhard_Riemann.jpeg/330px-Georg_Friedrich_Bernhard_Riemann.jpeg", credit:"Photograph, 1863", page:"https://commons.wikimedia.org/wiki/File:Georg_Friedrich_Bernhard_Riemann.jpeg"}],
+  "s2-4-1": [{who:"Eugenio Beltrami", yrs:"1835–1900", img:"https://upload.wikimedia.org/wikipedia/commons/2/2d/Beltrami.jpg", credit:"Photograph", page:"https://commons.wikimedia.org/wiki/File:Beltrami.jpg"}],
+  "s2-4-2": [{who:"Arthur Cayley", yrs:"1821–1895", img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a9/Arthur_Cayley.jpg/330px-Arthur_Cayley.jpg", credit:"Herbert Beraud, before 1883", page:"https://commons.wikimedia.org/wiki/File:Arthur_Cayley.jpg"}],
+  "s2-4-3": [{who:"Felix Klein", yrs:"1849–1925", img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4e/Felix_Klein%2C_ante_1897_-_Accademia_delle_Scienze_di_Torino_0078_B.jpg/330px-Felix_Klein%2C_ante_1897_-_Accademia_delle_Scienze_di_Torino_0078_B.jpg", credit:"Gebrüder Noelle, Göttingen, before 1897", page:"https://commons.wikimedia.org/wiki/File:Felix_Klein,_ante_1897_-_Accademia_delle_Scienze_di_Torino_0078_B.jpg"}],
+  "s2-4-4": [{who:"Henri Poincaré", yrs:"1854–1912", img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f4/PSM_V82_D416_Henri_Poincare.png/330px-PSM_V82_D416_Henri_Poincare.png", credit:"<i>Popular Science Monthly</i>, 1913", page:"https://commons.wikimedia.org/wiki/File:PSM_V82_D416_Henri_Poincare.png"}],
+  "s2-4-5": [{who:"William Kingdon Clifford", yrs:"1845–1879", img:"https://upload.wikimedia.org/wikipedia/commons/a/a4/Clifford_William_Kingdon_%28cropped_portrait%29.jpg", credit:"Portrait published 1901", page:"https://commons.wikimedia.org/wiki/File:Clifford_William_Kingdon_(cropped_portrait).jpg"}]
+};
+function addPortraits(root){
+  Object.keys(PORTRAITS).forEach(function(id){
+    const h = root.querySelector("#"+id); if(!h) return;
+    let anchor = h;
+    PORTRAITS[id].forEach(function(pt){
+      const f = document.createElement("figure");
+      f.className="portrait";
+      f.innerHTML='<img src="'+pt.img+'" alt="'+pt.who+'" loading="lazy" referrerpolicy="no-referrer">'+
+        '<figcaption><span class="who">'+pt.who+'</span>'+(pt.yrs?'<span class="yrs">'+pt.yrs+'</span>':'')+
+        '<span class="credit">'+pt.credit+'. Public domain, <a href="'+pt.page+'" target="_blank" rel="noopener">Wikimedia Commons</a></span></figcaption>';
+      anchor.insertAdjacentElement("afterend", f); anchor = f;
+    });
+  });
+}
+
 const S = UI[LANG];
 document.documentElement.lang = LANG;
 
@@ -613,6 +666,7 @@ CHAPTERS.forEach(function(ch){
   main.appendChild(sec); panels[ch.id]=sec;
 });
 
+addPortraits(panels.ch2);
 document.getElementById("fig-saccheri").innerHTML = figSaccheri();
 document.getElementById("fig-poincare").innerHTML = figPoincare();
 
