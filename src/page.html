@@ -1,0 +1,594 @@
+<title>Non-Euclidean Thesis Companion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: sticky chapter tab rail on top; inside a chapter, a book column (~66ch)
+   with a section index in the left margin on wide screens. Calm "printed book" feel. */
+:root{
+  --paper:#F4F5F1;
+  --sheet:#FBFBF8;
+  --ink:#1C232E;
+  --muted:#5A6371;
+  --rule:#D8DBD2;
+  --accent:#2C5A60;
+  --accent-soft:#E2EBE9;
+  --draft:#7A5B14;
+  --draft-soft:#F3ECD9;
+  --fig-1:#1C232E;
+  --fig-2:#2C5A60;
+  --fig-3:#7C8C96;
+  --fig-fill:#E7ECE8;
+  --f-display:"Cormorant Garamond","EB Garamond",Garamond,"Times New Roman",serif;
+  --f-body:"Literata",Georgia,"Times New Roman",serif;
+  --f-ui:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --measure:66ch;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#12161B; --sheet:#171C22; --ink:#E1E5DF; --muted:#9AA3AE; --rule:#2B323B;
+    --accent:#86BDBD; --accent-soft:#1E2B2E; --draft:#E0BE6E; --draft-soft:#2A2516;
+    --fig-1:#E1E5DF; --fig-2:#86BDBD; --fig-3:#8A99A4; --fig-fill:#1E262B;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#12161B; --sheet:#171C22; --ink:#E1E5DF; --muted:#9AA3AE; --rule:#2B323B;
+  --accent:#86BDBD; --accent-soft:#1E2B2E; --draft:#E0BE6E; --draft-soft:#2A2516;
+  --fig-1:#E1E5DF; --fig-2:#86BDBD; --fig-3:#8A99A4; --fig-fill:#1E262B;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:1.0625rem;line-height:1.65}
+a{color:var(--accent)}
+a:focus-visible,button:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+
+/* ---------- header + tabs ---------- */
+.masthead{padding:1.25rem 16px .75rem;max-width:84rem;margin:0 auto;display:flex;flex-wrap:wrap;gap:.5rem 1.5rem;align-items:baseline;justify-content:space-between}
+.masthead h1{font-family:var(--f-display);font-weight:600;font-size:clamp(1.5rem,4vw,2.1rem);line-height:1.1;margin:0;text-wrap:balance}
+.masthead p{margin:.2rem 0 0;font-family:var(--f-ui);font-size:.8rem;color:var(--muted);letter-spacing:.02em}
+.lang{font-family:var(--f-ui);font-size:.8rem;color:var(--muted);display:flex;gap:.4rem;align-items:center}
+.lang select{font:inherit;color:var(--ink);background:var(--sheet);border:1px solid var(--rule);border-radius:4px;padding:.15rem .3rem}
+.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--paper);border-bottom:1px solid var(--rule)}
+.tabs-inner{max-width:84rem;margin:0 auto;display:flex;gap:0 .1rem;overflow-x:auto;padding:0 16px;scrollbar-width:thin}
+@media (min-width:700px){.tabs-inner{flex-wrap:wrap;overflow-x:visible;justify-content:center}}
+.tab{flex:0 0 auto;font-family:var(--f-ui);font-size:.85rem;color:var(--muted);background:none;border:0;border-bottom:2px solid transparent;padding:.7rem .5rem .6rem;cursor:pointer;white-space:nowrap;display:flex;gap:.4rem;align-items:baseline}
+.tab .num{font-variant-numeric:tabular-nums;font-weight:600;color:var(--ink);opacity:.55}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.tab[aria-selected="true"] .num{color:var(--accent);opacity:1}
+.tab .dot{width:.4rem;height:.4rem;border-radius:50%;background:var(--draft);opacity:.7;align-self:center}
+
+/* ---------- chapter layout ---------- */
+main{max-width:84rem;margin:0 auto;padding:1.5rem 16px 4rem}
+.chapter{display:grid;grid-template-columns:minmax(0,1fr);gap:2rem}
+@media (min-width:1000px){
+  .chapter.has-toc{grid-template-columns:13rem minmax(0,1fr)}
+}
+@media (min-width:1240px){
+  .chapter.has-toc .book{padding-right:13.5rem;max-width:calc(var(--measure) + 13.5rem)}
+}
+.toc{font-family:var(--f-ui);font-size:.82rem;line-height:1.4}
+.toc-inner{position:sticky;top:calc(env(safe-area-inset-top,0px) + 3.6rem)}
+.toc h4{font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 .6rem;font-weight:600}
+.toc ol{list-style:none;margin:0;padding:0;display:grid;gap:.15rem}
+.toc a{color:var(--muted);text-decoration:none;display:block;padding:.2rem 0 .2rem .6rem;border-left:2px solid var(--rule)}
+.toc a:hover{color:var(--ink)}
+.toc a.lvl3{padding-left:1.4rem;font-size:.78rem}
+.toc a.on{color:var(--accent);border-left-color:var(--accent)}
+@media (max-width:999px){
+  .toc-inner{position:static}
+  .toc details{background:var(--sheet);border:1px solid var(--rule);border-radius:6px;padding:.6rem .8rem}
+  .toc summary{cursor:pointer;color:var(--ink);font-weight:500}
+  .toc ol{margin-top:.6rem}
+}
+@media (min-width:1000px){ .toc summary{display:none} .toc details > ol{display:grid} }
+
+.book{max-width:var(--measure);min-width:0}
+.eyebrow{font-family:var(--f-ui);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 .4rem}
+.book h2.ch-title{font-family:var(--f-display);font-weight:600;font-size:clamp(1.9rem,5vw,2.6rem);line-height:1.08;margin:0 0 1.2rem;text-wrap:balance}
+.book h2.sec{font-family:var(--f-display);font-weight:600;font-size:1.65rem;line-height:1.2;margin:2.8rem 0 .8rem;text-wrap:balance;scroll-margin-top:4.5rem}
+.book h3{font-family:var(--f-display);font-style:italic;font-weight:500;font-size:1.32rem;line-height:1.25;margin:2rem 0 .5rem;text-wrap:balance;scroll-margin-top:4.5rem}
+.book .no{font-family:var(--f-ui);font-style:normal;font-weight:500;font-size:.72em;color:var(--accent);margin-right:.55rem;font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.book p{margin:0 0 1rem;hyphens:auto}
+.book .draftnote{font-size:.95rem;color:var(--muted);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:.8rem 0}
+.book ol.axioms,.book ol.hyp{padding-left:0;list-style:none;display:grid;gap:.6rem;margin:0 0 1.2rem}
+.book ol.axioms li,.book ol.hyp li{display:grid;grid-template-columns:3.2rem minmax(0,1fr);gap:.4rem}
+.book ol.axioms .lab,.book ol.hyp .lab{font-family:var(--f-ui);font-size:.85rem;font-weight:600;color:var(--accent);padding-top:.15rem}
+.book ul{padding-left:1.2rem;margin:0 0 1.2rem}
+.book ul li{margin-bottom:.45rem}
+.book ol.roman{padding-left:1.6rem;list-style:lower-roman;margin:0 0 1.2rem}
+.book ol.roman li{margin-bottom:.45rem}
+.book blockquote{margin:1.2rem 0;padding:0 0 0 1.2rem;border-left:2px solid var(--rule);font-style:italic}
+.book blockquote .cite{font-style:normal}
+.math-display{overflow-x:auto;margin:1rem 0 1.2rem;padding:.2rem 0}
+math{font-size:1.08em}
+math[display="block"]{font-size:1.12em}
+
+.hnote{background:var(--accent-soft);border-radius:4px;padding:1rem 1.15rem;margin:1.6rem 0;scroll-margin-top:4.5rem}
+.hnote .hn-title{font-family:var(--f-ui);font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;font-weight:600;color:var(--accent);margin:0 0 .45rem}
+.hnote .hn-title em{text-transform:none;letter-spacing:0;font-size:.95rem;color:var(--ink);font-family:var(--f-body);font-weight:600;font-style:italic;margin-left:.3rem}
+.hnote p:last-child{margin-bottom:0}
+
+a.cite{font-family:var(--f-ui);font-size:.82em;text-decoration:none;white-space:nowrap;color:var(--accent);border-bottom:1px dotted currentColor}
+a.cite:hover{border-bottom-style:solid}
+a.xref{text-decoration:none;border-bottom:1px solid var(--rule)}
+a.xref:hover{border-bottom-color:var(--accent)}
+
+figure{margin:2rem 0;scroll-margin-top:4.5rem}
+.fig-wrap{background:var(--sheet);border:1px solid var(--rule);border-radius:4px;padding:1rem .5rem;overflow-x:auto}
+.fig-pending{font-family:var(--f-ui);font-size:.85rem;color:var(--muted);text-align:center;margin:.6rem 0}
+.fig-wrap svg{display:block;width:100%;height:auto;max-width:100%;min-width:20rem}
+figcaption{font-size:.9rem;line-height:1.5;color:var(--muted);margin-top:.7rem}
+figcaption b{color:var(--ink);font-family:var(--f-ui);font-size:.82rem;letter-spacing:.03em;margin-right:.3rem}
+svg text{font-family:var(--f-body)}
+
+.table-wrap{overflow-x:auto;margin:1.4rem 0 1.4rem;border-top:2px solid var(--ink);border-bottom:2px solid var(--ink)}
+table{border-collapse:collapse;width:100%;font-size:.95rem;min-width:30rem}
+th{text-align:left;font-family:var(--f-ui);font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;font-weight:600;padding:.6rem .7rem .5rem;border-bottom:1px solid var(--ink)}
+td{padding:.55rem .7rem;border-bottom:1px solid var(--rule);vertical-align:top}
+tr:last-child td{border-bottom:0}
+
+.traj{font-family:var(--f-ui);font-size:.75rem;font-weight:600;padding:.05rem .4rem;border-radius:3px;margin-right:.35rem;white-space:nowrap}
+.traj.t1{background:var(--ink);color:var(--paper)}
+.traj.t2{background:var(--accent);color:var(--paper)}
+.traj.t3{border:1px solid var(--accent);color:var(--accent)}
+
+.bib{margin-top:3.5rem;border-top:1px solid var(--rule);padding-top:.5rem}
+.bib dl{display:grid;grid-template-columns:4.2rem minmax(0,1fr);gap:.9rem .8rem;font-size:.93rem;line-height:1.5}
+.bib dt{font-family:var(--f-ui);font-size:.85rem;font-weight:600;color:var(--accent);scroll-margin-top:5rem}
+.bib dd{margin:0;scroll-margin-top:5rem}
+.bib dd.flash, .bib dt.flash{animation:flash 1.6s ease-out}
+@keyframes flash{0%{background:var(--accent-soft)}100%{background:transparent}}
+@media (prefers-reduced-motion: reduce){.bib dd.flash,.bib dt.flash{animation:none;background:var(--accent-soft)}}
+
+/* ---------- draft chapters ---------- */
+.draft-banner{display:flex;gap:.7rem;align-items:flex-start;background:var(--draft-soft);color:var(--ink);border-radius:4px;padding:.8rem 1rem;font-family:var(--f-ui);font-size:.88rem;line-height:1.45;margin-bottom:1.6rem}
+.draft-banner.progress{background:var(--accent-soft)}
+.draft-banner.progress strong{color:var(--accent)}
+.portrait{float:right;clear:right;width:7.5rem;margin:.35rem 0 .8rem 1.1rem;font-family:var(--f-ui);font-size:.72rem;line-height:1.35;color:var(--muted)}
+.portrait img{display:block;width:100%;height:auto;border-radius:3px;filter:grayscale(.15) sepia(.12);background:var(--fig-fill)}
+.portrait figcaption{margin-top:0;font-size:inherit;line-height:inherit;color:inherit}
+.portrait .who{display:block;color:var(--ink);font-weight:600;font-size:.8rem;margin-top:.4rem}
+.portrait .yrs{font-variant-numeric:tabular-nums}
+.portrait .credit{display:block;margin-top:.25rem;font-size:.66rem}
+.portrait .credit a{color:var(--muted)}
+@media (min-width:1240px){
+  .portrait{width:11.5rem;margin:.3rem -13.5rem 1rem 0}
+}
+@media (max-width:520px){ .portrait{width:6.2rem} }
+.draft-banner strong{color:var(--draft);text-transform:uppercase;letter-spacing:.08em;font-size:.75rem;white-space:nowrap;padding-top:.1rem}
+.sample-label{font-family:var(--f-ui);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:1.8rem 0 .5rem}
+.exercise{border:1px solid var(--rule);background:var(--sheet);border-radius:4px;padding:1rem 1.15rem}
+.exercise p:last-child{margin-bottom:0}
+.planned{font-family:var(--f-ui);font-size:.88rem;color:var(--muted);padding-left:1.2rem}
+.planned li{margin-bottom:.25rem}
+
+footer{max-width:84rem;margin:0 auto;padding:1.5rem 16px 2.5rem;border-top:1px solid var(--rule);font-family:var(--f-ui);font-size:.78rem;color:var(--muted)}
+</style>
+
+<header>
+  <div class="masthead">
+    <div>
+      <h1 id="site-title">Non-Euclidean Geometry in the Italian Liceo</h1>
+          </div>
+    <label class="lang" for="lang-select"><span id="lang-label">Language</span>
+      <select id="lang-select">
+        <option value="en" selected>English</option>
+        <option value="it" disabled>Italiano (later)</option>
+        <option value="ru" disabled>Русский (later)</option>
+      </select>
+    </label>
+  </div>
+  <nav class="tabs" aria-label="Chapters"><div class="tabs-inner" role="tablist" id="tablist"></div></nav>
+</header>
+
+<main id="main"></main>
+
+
+<!-- ============ CONTENT (English) ============ -->
+
+<template id="en-ch2">
+<!--BUILD:CH2-->
+</template>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<script>
+(function(){
+"use strict";
+
+/* ---------------- i18n-ready data ---------------- */
+const LANG = "en";
+const UI = {
+  en:{
+    draftTag:"Draft",
+    draftMsg:"Content will be published after supervisor approval. The text below is sample text, not thesis text.",
+    sampleText:"Sample text", sampleEx:"Sample exercise", planned:"Planned sections (current thesis outline)",
+    contents:"Contents", chapter:"Chapter", appendix:"Appendix"
+  }
+};
+const CHAPTERS = [
+  {id:"ch1", num:"1", short:"Introduction", title:"Introduction",
+   sections:["Motivation and Context","Research Questions","Overview of the Source Literature","Contributions of this Thesis","Scope and Limitations","Italian Curriculum Context","Structure of the Thesis"],
+   sample:["This chapter will explain why non-Euclidean geometry belongs in the Italian liceo, and which questions the thesis tries to answer.","It will also give a short map of the source literature and of how the remaining chapters fit together."],
+   ex:"In your own words, write what a <em>postulate</em> is. Then give one example of a statement from your school geometry course that you have always accepted without proof."},
+  {id:"ch2", num:"2", short:"History", title:"A History of Non-Euclidean Geometry", full:true},
+  {id:"ch3", num:"3", short:"Mathematics", title:"Mathematical Foundations of Hyperbolic Geometry",
+   sections:["Absolute Geometry: The Axiomatic Framework","Hyperbolic Geometry: The Lobachevsky Postulate","Models of the Hyperbolic Plane","Isometries of the Hyperbolic Plane","Hyperbolic Trigonometry","Area in Hyperbolic Geometry and the Gauss–Bonnet Theorem"],
+   sample:["This chapter will build hyperbolic geometry step by step: first the axioms shared with Euclidean geometry, then the one axiom that changes.","Results announced in Chapter 2, such as the Saccheri–Legendre theorem and the angle of parallelism, are proved here."],
+   ex:"In the Poincaré disk, let $O$ be the centre and $P \\neq O$ another point. How many hyperbolic lines pass through both $O$ and $P$, and what do they look like in the picture?"},
+  {id:"ch4", num:"4", short:"Pedagogy", title:"Pedagogical Framework",
+   sections:["Differentiated Instruction","Didactical Engineering and Transpositive Didactics","Vygotsky's Zone of Proximal Development","The van Hiele Model of Geometric Thinking","Learning Trajectories","Three Student Profiles","Assessment Design Across Trajectories","On Visual Aids, Technology, and Physical Models","Design Methodology: How the Frameworks Drove the Decisions"],
+   sample:["This chapter will present the teaching frameworks behind the module and explain how they led to three separate learning trajectories.","Each design decision in Chapters 5–7 will be traced back to one of these frameworks."],
+   ex:"(For the teacher.) Pick one sentence from Section 2.5 and decide which trajectory it is written for. What would you change to make it suitable for another trajectory?"},
+  {id:"ch5", num:"5", short:"Trajectory 1", title:"Trajectory 1: The Struggling Student", traj:"t1",
+   sections:["Lesson Sequence","Core Content for Trajectory 1","Exercise Set: Trajectory 1","Selected Full Solutions: Trajectory 1","Teacher Notes: Trajectory 1"],
+   sample:["Trajectory 1 will start from hands-on activities and pictures rather than proofs.","The aim is the message from Section 2.5: the rules can be different on a curved surface."],
+   ex:"Draw a triangle on a ball or an orange using three arcs of great circles. Measure its three angles with a protractor and add them up. Is the sum 180°?"},
+  {id:"ch6", num:"6", short:"Trajectory 2", title:"Trajectory 2: The Regular Student", traj:"t2",
+   sections:["Lesson Sequence","Core Content for Trajectory 2","Exercise Set: Trajectory 2","Selected Solutions: Trajectory 2","Teacher Notes: Trajectory 2"],
+   sample:["Trajectory 2 will treat the fifth postulate as one axiom among several possible choices.","Students will work mostly in the Poincaré models, where angles can be measured directly."],
+   ex:"Assume Playfair's axiom. Prove that if a line meets one of two parallel lines, then it also meets the other."},
+  {id:"ch7", num:"7", short:"Trajectory 3", title:"Trajectory 3: The Advanced (Olympiad) Student", traj:"t3",
+   sections:["Lesson Sequence","Core Content for Trajectory 3","Exercise Set: Trajectory 3","Selected Solutions: Trajectory 3","Teacher Notes: Trajectory 3"],
+   sample:["Trajectory 3 will reach relative consistency: the Poincaré disk as a proof that hyperbolic geometry is as consistent as Euclidean geometry.","Complex numbers and Möbius transformations will be the main tools."],
+   ex:"Show that the Cayley map $\\varphi(z) = (z-i)/(z+i)$ sends every real number $x$ to a point of the unit circle $|w| = 1$."},
+  {id:"ch8", num:"8", short:"Comparison", title:"Comparative Analysis of the Three Trajectories",
+   sections:["Full Comparison Table","Transition Pathways","Parallel Classroom Deployment","Assessment Design","Implementation Risks and Mitigations"],
+   sample:["This chapter will compare the three trajectories side by side and describe how a student can move from one to another.","It will also discuss how all three can run in the same classroom at once."],
+   ex:"Compare the three versions of the central message in Section 2.5. Which words change from T1 to T3, and what does each change ask of the student?"},
+  {id:"ch9", num:"9", short:"Conclusions", title:"Conclusions and Future Work",
+   sections:["Summary of Contributions","Limitations","Proposed Pilot Study"],
+   sample:["This chapter will summarise what the thesis contributes and where its limits lie.","It will close with a plan for a pilot study in a real class."],
+   ex:"List two things you would measure in a pilot study of this module, and say how you would measure each one."},
+  {id:"app", num:"A", short:"Worksheet", title:"Appendix: Worksheet", appendix:true,
+   sections:[],
+   sample:["The appendix will contain a printable worksheet that accompanies the lessons.","Below is one sample item."],
+   ex:"Complete the table using Section 2.4.5.<br><br><table style=\"min-width:0\"><thead><tr><th>Geometry</th><th>Parallels through an external point</th><th>Angle sum of a triangle</th></tr></thead><tbody><tr><td>Euclidean</td><td>…</td><td>…</td></tr><tr><td>Hyperbolic</td><td>…</td><td>…</td></tr><tr><td>Elliptic</td><td>(none)</td><td>…</td></tr></tbody></table>"}
+];
+
+
+/* Portraits, keyed by the LaTeX label of the section (or its title if it has no label): public domain, except Bolyai (CC BY-SA 3.0, added at the author's request) (licence checked on Wikimedia Commons, Oct 2026).
+   Names and years are taken from the thesis text; credit = artist/date from the Commons file page. */
+const PORTRAITS = {
+  "sec:euclid_parallel":   [{who:"Euclid", yrs:"", img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/7/73/Italian_-_Euclid_-_Google_Art_Project.jpg/330px-Italian_-_Euclid_-_Google_Art_Project.jpg", credit:"Jusepe de Ribera, <i>Euclid</i>, c. 1630–35", page:"https://commons.wikimedia.org/wiki/File:Italian_-_Euclid_-_Google_Art_Project.jpg"}],
+  "Proclus and the Islamic Tradition": [{who:"Proclus", yrs:"410–485 CE", img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bf/In_primum_Euclidis_elementorum_librum_01.jpg/330px-In_primum_Euclidis_elementorum_librum_01.jpg", credit:"Title page, Latin edition of Proclus' commentary on Euclid, trans. F. Barozzi, 1560", page:"https://commons.wikimedia.org/wiki/File:In_primum_Euclidis_elementorum_librum_01.jpg"},
+             {who:"Ibn al-Haytham", yrs:"", img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a2/Ibn_al-Haytham_crop.jpg/330px-Ibn_al-Haytham_crop.jpg", credit:"Frontispiece of Hevelius, <i>Selenographia</i>, 1647 (detail)", page:"https://commons.wikimedia.org/wiki/File:Ibn_al-Haytham_crop.jpg"}],
+  "subsec:saccheri": [{who:"Girolamo Saccheri", yrs:"1667–1733", img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/8/84/Saccheri_1733_-_Euclide_Ab_Omni_Naevo_Vindicatus.gif/330px-Saccheri_1733_-_Euclide_Ab_Omni_Naevo_Vindicatus.gif", credit:"Title page of <i>Euclides ab omni naevo vindicatus</i>, 1733", page:"https://commons.wikimedia.org/wiki/File:Saccheri_1733_-_Euclide_Ab_Omni_Naevo_Vindicatus.gif"}],
+  "subsec:lambert": [{who:"Johann Heinrich Lambert", yrs:"1728–1777", img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9b/JHLambert.jpg/330px-JHLambert.jpg", credit:"Engraved portrait", page:"https://commons.wikimedia.org/wiki/File:JHLambert.jpg"}],
+  "subsec:legendre": [{who:"Adrien-Marie Legendre", yrs:"1752–1833", img:"https://upload.wikimedia.org/wikipedia/commons/0/03/Legendre.jpg", credit:"Julien-Léopold Boilly, 1820", page:"https://commons.wikimedia.org/wiki/File:Legendre.jpg"}],
+  "subsec:gauss": [{who:"Carl Friedrich Gauss", yrs:"1777–1855", img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ec/Carl_Friedrich_Gauss_1840_by_Jensen.jpg/330px-Carl_Friedrich_Gauss_1840_by_Jensen.jpg", credit:"Christian Albrecht Jensen, 1840", page:"https://commons.wikimedia.org/wiki/File:Carl_Friedrich_Gauss_1840_by_Jensen.jpg"}],
+  "subsec:lobachevsky": [{who:"Nikolai Ivanovich Lobachevsky", yrs:"1792–1856", img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4d/Lobachevsky_03_crop.jpg/330px-Lobachevsky_03_crop.jpg", credit:"Lev Kryukov, 1839", page:"https://commons.wikimedia.org/wiki/File:Lobachevsky_03_crop.jpg"}],
+  "subsec:bolyai": [{who:"János Bolyai", yrs:"1802–1860", img:"img/bolyai-markos-2012.jpg", credit:"Ferenc Márkos, painting, 2012", lic:'<a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank" rel="noopener">CC BY-SA 3.0</a>', page:"https://commons.wikimedia.org/wiki/File:Bolyai_J%C3%A1nos_(M%C3%A1rkos_Ferenc_festm%C3%A9nye).jpg"}],
+  "subsec:riemann": [{who:"Bernhard Riemann", yrs:"1826–1866", img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/8/82/Georg_Friedrich_Bernhard_Riemann.jpeg/330px-Georg_Friedrich_Bernhard_Riemann.jpeg", credit:"Photograph, 1863", page:"https://commons.wikimedia.org/wiki/File:Georg_Friedrich_Bernhard_Riemann.jpeg"}],
+  "subsec:beltrami": [{who:"Eugenio Beltrami", yrs:"1835–1900", img:"https://upload.wikimedia.org/wikipedia/commons/2/2d/Beltrami.jpg", credit:"Photograph", page:"https://commons.wikimedia.org/wiki/File:Beltrami.jpg"}],
+  "subsec:cayley_metric": [{who:"Arthur Cayley", yrs:"1821–1895", img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a9/Arthur_Cayley.jpg/330px-Arthur_Cayley.jpg", credit:"Herbert Beraud, before 1883", page:"https://commons.wikimedia.org/wiki/File:Arthur_Cayley.jpg"}],
+  "subsec:klein_model_history": [{who:"Felix Klein", yrs:"1849–1925", img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4e/Felix_Klein%2C_ante_1897_-_Accademia_delle_Scienze_di_Torino_0078_B.jpg/330px-Felix_Klein%2C_ante_1897_-_Accademia_delle_Scienze_di_Torino_0078_B.jpg", credit:"Gebrüder Noelle, Göttingen, before 1897", page:"https://commons.wikimedia.org/wiki/File:Felix_Klein,_ante_1897_-_Accademia_delle_Scienze_di_Torino_0078_B.jpg"}],
+  "subsec:poincare_history": [{who:"Henri Poincaré", yrs:"1854–1912", img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f4/PSM_V82_D416_Henri_Poincare.png/330px-PSM_V82_D416_Henri_Poincare.png", credit:"<i>Popular Science Monthly</i>, 1913", page:"https://commons.wikimedia.org/wiki/File:PSM_V82_D416_Henri_Poincare.png"}],
+  "subsec:elliptic_clifford": [{who:"William Kingdon Clifford", yrs:"1845–1879", img:"https://upload.wikimedia.org/wikipedia/commons/a/a4/Clifford_William_Kingdon_%28cropped_portrait%29.jpg", credit:"Portrait published 1901", page:"https://commons.wikimedia.org/wiki/File:Clifford_William_Kingdon_(cropped_portrait).jpg"}]
+};
+function addPortraits(root){
+  Object.keys(PORTRAITS).forEach(function(id){
+    const h = root.querySelector('[data-key="'+id.replace(/"/g,'')+'"]'); if(!h) return;
+    let anchor = h;
+    PORTRAITS[id].forEach(function(pt){
+      const f = document.createElement("figure");
+      f.className="portrait";
+      f.innerHTML='<img src="'+pt.img+'" alt="'+pt.who+'" loading="lazy" referrerpolicy="no-referrer">'+
+        '<figcaption><span class="who">'+pt.who+'</span>'+(pt.yrs?'<span class="yrs">'+pt.yrs+'</span>':'')+
+        '<span class="credit">'+pt.credit+'. '+(pt.lic||'Public domain')+', <a href="'+pt.page+'" target="_blank" rel="noopener">Wikimedia Commons</a></span></figcaption>';
+      anchor.insertAdjacentElement("afterend", f); anchor = f;
+    });
+  });
+}
+
+const S = UI[LANG];
+document.documentElement.lang = LANG;
+
+/* ---------------- storage (per-viewer convenience only) ---------------- */
+function load(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+function save(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+
+/* ---------------- figures (coordinates follow the TikZ source) ---------------- */
+function figSaccheri(){
+  const U=62, ox0=0.7, oy=2.7;                 // tikz unit → px; origin shifts
+  const X=(x)=> (x+ox0)*U, Y=(y)=> (oy-y)*U;
+  const W=(7.8+2.4+1.4)*U, H=(oy+1.05)*U;
+  const P=(x,y)=>X(x).toFixed(1)+","+Y(y).toFixed(1);
+  function arc(cx,cy,r,a0,a1){ let pts=[]; for(let i=0;i<=24;i++){const a=(a0+(a1-a0)*i/24)*Math.PI/180; pts.push(P(cx+r*Math.cos(a),cy+r*Math.sin(a)));} return "M"+pts.join(" L"); }
+  function bez(x0,h){ // quadratic Bezier D -> C with control (1.2, 2-h)
+    let pts=[]; for(let i=0;i<=32;i++){const t=i/32, x=x0+2.4*t, y=(1-t)*(1-t)*2+2*(1-t)*t*(2-h)+t*t*2; pts.push(P(x,y));} return pts;
+  }
+  const panels=[{x:0,h:0,name:"(H1) right"},{x:3.9,h:-0.5,name:"(H2) obtuse"},{x:7.8,h:0.5,name:"(H3) acute"}];
+  let s='<svg viewBox="0 0 '+W.toFixed(0)+' '+H.toFixed(0)+'" role="img" aria-label="Saccheri quadrilaterals under the hypotheses of the right, obtuse and acute angle">';
+  panels.forEach(function(p,i){
+    const hl = i===2, col = hl ? "var(--fig-2)" : "var(--fig-1)";
+    const top = bez(p.x,p.h);
+    s+='<path d="M'+P(p.x,0)+' L'+P(p.x+2.4,0)+' L'+top[top.length-1]+' L'+top.slice().reverse().join(" L")+' Z" fill="'+(hl?"var(--fig-fill)":"none")+'" stroke="none"/>';
+    s+='<g fill="none" stroke="'+col+'" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">';
+    s+='<path d="M'+P(p.x,0)+' L'+P(p.x+2.4,0)+'"/><path d="M'+P(p.x,0)+' L'+P(p.x,2)+'"/><path d="M'+P(p.x+2.4,0)+' L'+P(p.x+2.4,2)+'"/>';
+    s+='<path d="M'+top.join(" L")+'"/></g>';
+    s+='<g fill="none" stroke="'+col+'" stroke-width="1.6">';
+    s+='<path d="M'+P(p.x+0.25,0)+' L'+P(p.x+0.25,0.25)+' L'+P(p.x,0.25)+'"/>';
+    s+='<path d="M'+P(p.x+2.15,0)+' L'+P(p.x+2.15,0.25)+' L'+P(p.x+2.4,0.25)+'"/>';
+    s+='<path d="M'+P(p.x-0.1,1)+' L'+P(p.x+0.1,1)+'"/><path d="M'+P(p.x+2.3,1)+' L'+P(p.x+2.5,1)+'"/>';
+    if(p.h===0){
+      s+='<path d="M'+P(p.x,1.75)+' L'+P(p.x+0.25,1.75)+' L'+P(p.x+0.25,2)+'"/>';
+      s+='<path d="M'+P(p.x+2.4,1.75)+' L'+P(p.x+2.15,1.75)+' L'+P(p.x+2.15,2)+'"/>';
+    } else {
+      const t=Math.atan2(-p.h,1.2)*180/Math.PI;          // summit tangent at D
+      s+='<path d="'+arc(p.x,2,0.3,-90,t)+'"/>';
+      s+='<path d="'+arc(p.x+2.4,2,0.3,180-t,270)+'"/>';
+    }
+    s+='</g>';
+    s+='<g fill="'+col+'" font-size="23" font-style="italic">';
+    s+='<text x="'+(X(p.x)-22)+'" y="'+(Y(0)+22)+'">A</text>';
+    s+='<text x="'+(X(p.x+2.4)+6)+'" y="'+(Y(0)+22)+'">B</text>';
+    s+='<text x="'+(X(p.x+2.4)+6)+'" y="'+(Y(2)-8)+'">C</text>';
+    s+='<text x="'+(X(p.x)-22)+'" y="'+(Y(2)-8)+'">D</text></g>';
+    s+='<text x="'+X(p.x+1.2)+'" y="'+(Y(-0.62))+'" text-anchor="middle" font-size="21" fill="'+col+'"'+(hl?' font-weight="600"':'')+'>'+p.name+'</text>';
+  });
+  return s+'</svg>';
+}
+
+function figPoincare(){
+  const U=95, W=8.4*U, H=4.05*U;
+  // disk centred at tikz (-2.2,0); half-plane at xshift 2.2. Map tikz (x,y) → svg.
+  const X=(x)=> (x+4.2)*U, Y=(y)=> (2.6-y)*U;
+  const P=(x,y)=>X(x).toFixed(1)+","+Y(y).toFixed(1);
+  function arcPath(cx,cy,r,a0,a1,n){ n=n||40; let pts=[]; for(let i=0;i<=n;i++){const a=(a0+(a1-a0)*i/n)*Math.PI/180; pts.push(P(cx+r*Math.cos(a),cy+r*Math.sin(a)));} return "M"+pts.join(" L"); }
+  const dx=-2.2, hx=2.2, r3=Math.sqrt(3);
+  let s='<svg viewBox="0 0 '+W.toFixed(0)+' '+H.toFixed(0)+'" role="img" aria-label="Poincaré disk and upper half-plane with geodesics">';
+  // --- disk
+  s+='<circle cx="'+X(dx)+'" cy="'+Y(0)+'" r="'+U+'" fill="var(--fig-fill)" stroke="var(--fig-1)" stroke-width="2.6"/>';
+  s+='<g fill="none" stroke-width="3" stroke-linecap="round">';
+  s+='<path d="M'+P(dx,-1)+' L'+P(dx,1)+'" stroke="var(--fig-2)"/>';                         // diameter
+  s+='<path d="'+arcPath(dx+2,0,r3,150,210)+'" stroke="var(--fig-3)"/>';                     // centre (2,0), r=√3
+  s+='<path d="'+arcPath(dx,2,r3,-60,-120)+'" stroke="var(--fig-1)"/>';                      // centre (0,2), r=√3
+  s+='</g>';
+  [0,90,180,270].forEach(function(a){ const t=a*Math.PI/180; s+='<circle cx="'+X(dx+Math.cos(t))+'" cy="'+Y(Math.sin(t))+'" r="3" fill="var(--fig-1)"/>'; });
+    s+='<text x="'+(X(dx+1)+8)+'" y="'+(Y(0)+8)+'" font-size="22" fill="var(--fig-1)">∂𝔻</text>';
+  s+='<text x="'+X(dx)+'" y="'+(Y(1.12)-4)+'" text-anchor="middle" font-size="23" font-weight="600" fill="var(--fig-1)">Poincaré Disk 𝔻</text>';
+  s+='<text x="'+X(dx)+'" y="'+(Y(-1.12)+24)+'" text-anchor="middle" font-size="20" fill="var(--fig-1)" opacity=".75">conformal</text>';
+  // --- half-plane
+  s+='<rect x="'+X(hx-1.3)+'" y="'+Y(2.0)+'" width="'+(2.6*U)+'" height="'+(2*U)+'" fill="var(--fig-fill)"/>';
+  s+='<path d="M'+P(hx-1.3,0)+' L'+P(hx+1.3,0)+'" stroke="var(--fig-1)" stroke-width="2.6"/>';
+  s+='<g fill="none" stroke-width="3" stroke-linecap="round">';
+  s+='<path d="M'+P(hx,0)+' L'+P(hx,2)+'" stroke="var(--fig-2)"/>';
+  s+='<path d="'+arcPath(hx-0.6,0,0.7,180,0)+'" stroke="var(--fig-3)"/>';
+  s+='<path d="'+arcPath(hx+0.7,0,0.5,180,0)+'" stroke="var(--fig-1)"/>';
+  s+='</g>';
+    s+='<text x="'+(X(hx+1.3)+8)+'" y="'+(Y(0)+8)+'" font-size="22" fill="var(--fig-1)">ℝ</text>';
+  s+='<text x="'+(X(hx-1.25))+'" y="'+(Y(1.5)+4)+'" font-size="20" font-style="italic" fill="var(--fig-1)">y &gt; 0</text>';
+  s+='<text x="'+X(hx)+'" y="'+(Y(2.08)-4)+'" text-anchor="middle" font-size="23" font-weight="600" fill="var(--fig-1)">Upper Half-Plane ℍ</text>';
+  s+='<text x="'+X(hx)+'" y="'+(Y(-0.12)+24)+'" text-anchor="middle" font-size="20" fill="var(--fig-1)" opacity=".75">conformal</text>';
+  // --- Cayley map arrow
+  const ay=Y(0.5), ax0=X(-0.62), ax1=X(0.62);
+  s+='<g stroke="var(--muted)" stroke-width="2.2" fill="none"><path d="M'+ax0+','+ay+' L'+ax1+','+ay+'"/><path d="M'+(ax0+10)+','+(ay-6)+' L'+ax0+','+ay+' L'+(ax0+10)+','+(ay+6)+'"/><path d="M'+(ax1-10)+','+(ay-6)+' L'+ax1+','+ay+' L'+(ax1-10)+','+(ay+6)+'"/></g>';
+  s+='<text x="'+X(0)+'" y="'+(ay-10)+'" text-anchor="middle" font-size="20" fill="var(--muted)">Cayley map <tspan font-style="italic">φ</tspan></text>';
+  return s+'</svg>';
+}
+
+
+/* Shared helpers for figures drawn from TikZ coordinates (y up). */
+function frame(x0,x1,y0,y1,U){
+  const X=(x)=>((x-x0)*U), Y=(y)=>((y1-y)*U);
+  return {X:X,Y:Y,W:(x1-x0)*U,H:(y1-y0)*U,P:(x,y)=>X(x).toFixed(1)+","+Y(y).toFixed(1),
+    arc:function(cx,cy,r,a0,a1,n){ n=n||48; let pts=[]; for(let i=0;i<=n;i++){const a=(a0+(a1-a0)*i/n)*Math.PI/180; pts.push(X(cx+r*Math.cos(a)).toFixed(1)+","+Y(cy+r*Math.sin(a)).toFixed(1));} return pts; }};
+}
+function dot(F,x,y,r,hollow){ return '<circle cx="'+F.X(x).toFixed(1)+'" cy="'+F.Y(y).toFixed(1)+'" r="'+r+'" fill="'+(hollow?'var(--sheet)':'var(--fig-1)')+'" stroke="var(--fig-1)" stroke-width="1.6"/>'; }
+function lbl(F,x,y,t,o){ o=o||{}; return '<text x="'+(F.X(x)+(o.dx||0)).toFixed(1)+'" y="'+(F.Y(y)+(o.dy||0)).toFixed(1)+'" font-size="'+(o.size||24)+'" font-style="'+(o.it===false?'normal':'italic')+'" text-anchor="'+(o.anchor||'middle')+'" fill="var(--fig-1)">'+t+'</text>'; }
+function seg(F,a,b,o){ o=o||{}; return '<path d="M'+F.P(a[0],a[1])+' L'+F.P(b[0],b[1])+'" stroke="'+(o.col||'var(--fig-1)')+'" stroke-width="'+(o.w||2.6)+'"'+(o.dash?' stroke-dasharray="'+o.dash+'"':'')+' fill="none" stroke-linecap="round"/>'; }
+
+/* fig:klein_parallels — after Sosinsky 2020, Fig. 3 (coordinates from the thesis TikZ, scale 2). */
+function figKlein(){
+  const F=frame(-1.2,3.8,-1.25,1.2,120);
+  let s='<svg viewBox="0 0 '+F.W.toFixed(0)+' '+F.H.toFixed(0)+'" role="img" aria-label="Klein model: perpendicular from P to a line, and the two parallels through P">';
+  // LEFT
+  s+='<circle cx="'+F.X(0)+'" cy="'+F.Y(0)+'" r="'+120+'" fill="var(--fig-fill)" stroke="var(--fig-1)" stroke-width="2.2" stroke-dasharray="2 6" stroke-linecap="round"/>';
+  s+=seg(F,[-0.8,-0.6],[0.8,-0.6]);
+  s+=seg(F,[0.2165,-0.6],[0.45,0.55]);
+  s+='<path d="M'+F.P(0.3065,-0.6)+' L'+F.P(0.3244,-0.5118)+' L'+F.P(0.2344,-0.5118)+'" stroke="var(--fig-1)" stroke-width="1.6" fill="none"/>';
+  s+=dot(F,0.2165,-0.6,4.5)+lbl(F,0.2165,-0.6,'H',{dy:30});
+  s+=dot(F,0.45,0.55,4.5)+lbl(F,0.45,0.55,'P',{dx:-14,dy:-10});
+  s+=dot(F,-0.8,-0.6,4.5,true)+lbl(F,-0.8,-0.6,'X',{dx:-14,dy:26});
+  s+=dot(F,0.8,-0.6,4.5,true)+lbl(F,0.8,-0.6,'Y',{dx:14,dy:26});
+  // RIGHT (xshift 2.6)
+  const o=2.6, R=function(p){return [p[0]+o,p[1]];};
+  const Px=0.15+o;
+  s+='<circle cx="'+F.X(o)+'" cy="'+F.Y(0)+'" r="'+120+'" fill="var(--fig-fill)" stroke="none"/>';
+  const w1=F.arc(o,0,1,170.8,244.23), w2=F.arc(o,0,1,-6.8,49.77);
+  s+='<path d="M'+F.P(Px,0)+' L'+w1.join(' L')+' Z" fill="var(--fig-3)" fill-opacity=".35" stroke="none"/>';
+  s+='<path d="M'+F.P(Px,0)+' L'+w2.join(' L')+' Z" fill="var(--fig-3)" fill-opacity=".35" stroke="none"/>';
+  s+='<circle cx="'+F.X(o)+'" cy="'+F.Y(0)+'" r="'+120+'" fill="none" stroke="var(--fig-1)" stroke-width="2.2" stroke-dasharray="2 6" stroke-linecap="round"/>';
+  s+=seg(F,R([-0.9871,0.1598]),R([0.993,-0.1185]));
+  s+=seg(F,R([-0.4348,-0.9005]),R([0.6458,0.7635]));
+  s+=seg(F,R([0.993,-0.1185]),R([-0.4348,-0.9005]));
+  s+=seg(F,R([-0.9609,-0.277]),R([0.9784,0.2066]),{w:2,dash:'9 7'});
+  [[-0.9871,0.1598],[0.993,-0.1185],[-0.4348,-0.9005],[0.6458,0.7635],[-0.9609,-0.277],[0.9784,0.2066]].forEach(function(q){ s+=dot(F,q[0]+o,q[1],4,true); });
+  s+=dot(F,Px,0,4.5)+lbl(F,Px,0,'P',{dy:32});
+  s+=lbl(F,-0.5+o,0.26,'m',{dy:8})+lbl(F,0.42+o,0.62,'k',{dy:8})+lbl(F,0.35+o,-0.68,'ℓ',{dy:8})+lbl(F,-0.45+o,0.7,'𝔻',{dy:8,it:false});
+  return s+'</svg>';
+}
+
+/* fig:uhp_parallels_hist — after Sosinsky 2020, Fig. 2 (coordinates from the thesis TikZ). */
+function figUHP(){
+  const F=frame(-3.15,7.75,-0.35,2.75,80);
+  let s='<svg viewBox="0 0 '+F.W.toFixed(0)+' '+F.H.toFixed(0)+'" role="img" aria-label="Parallels in the upper half-plane model">';
+  // LEFT: l = semicircle r=1 centred at 0, P=(0,1.6)
+  const c1=F.arc(0.78,0,1.78,0,180), c2=F.arc(-0.78,0,1.78,0,180);
+  s+='<path d="M'+c1.join(' L')+' Z M'+c2.join(' L')+' Z" fill="var(--fig-3)" fill-opacity=".35" fill-rule="evenodd" stroke="none"/>';
+  s+='<path d="M'+c1.join(' L')+'" stroke="var(--fig-1)" stroke-width="2" fill="none"/>';
+  s+='<path d="M'+c2.join(' L')+'" stroke="var(--fig-1)" stroke-width="2" fill="none"/>';
+  s+='<path d="M'+F.arc(0,0,1.6,0,180).join(' L')+'" stroke="var(--fig-1)" stroke-width="2" stroke-dasharray="9 7" fill="none"/>';
+  s+='<path d="M'+F.arc(0,0,1,0,180).join(' L')+'" stroke="var(--fig-1)" stroke-width="3.6" fill="none"/>';
+  s+=seg(F,[-3,0],[3,0],{w:2.2,dash:'2 6'});
+  s+=dot(F,0,1.6,5)+lbl(F,0,1.6,'P',{dy:-14});
+  s+=lbl(F,0,0.55,'ℓ',{dy:8})+lbl(F,-2.5,1.9,'ℍ',{dy:8,it:false});
+  // RIGHT (xshift 4): l = vertical ray x=0, P=(1,1.5); clipped to [-0.1,3.6]x[0,2.5]
+  const o=4, R=function(x){return x+o;};
+  s+='<defs><clipPath id="uhp-clip"><rect x="'+F.X(R(-0.1))+'" y="'+F.Y(2.5)+'" width="'+(3.7*80)+'" height="'+(2.5*80)+'"/></clipPath></defs><g clip-path="url(#uhp-clip)">';
+  const a1=F.arc(R(1.625),0,1.625,180,112.62), a2=F.arc(R(1.625),0,1.625,0,112.62);
+  s+='<path d="M'+a1.join(' L')+' L'+F.P(R(1),0)+' Z" fill="var(--fig-3)" fill-opacity=".35" stroke="none"/>';
+  s+='<path d="M'+F.P(R(1),1.5)+' L'+F.P(R(1),2.5)+' L'+F.P(R(3.6),2.5)+' L'+F.P(R(3.6),0)+' L'+a2.join(' L')+' Z" fill="var(--fig-3)" fill-opacity=".35" stroke="none"/>';
+  s+='<path d="M'+F.arc(R(1.625),0,1.625,0,180).join(' L')+'" stroke="var(--fig-1)" stroke-width="2" fill="none"/>';
+  s+=seg(F,[R(1),0],[R(1),2.5],{w:2});
+  s+='<path d="M'+F.arc(R(2.575),0,2.175,0,180).join(' L')+'" stroke="var(--fig-1)" stroke-width="2" stroke-dasharray="9 7" fill="none"/>';
+  s+='</g>';
+  s+=seg(F,[R(0),0],[R(0),2.5],{w:3.6});
+  s+=lbl(F,R(0),2.2,'ℓ',{dx:-16,dy:8});
+  s+=seg(F,[R(-0.1),0],[R(3.6),0],{w:2.2,dash:'2 6'});
+  s+=dot(F,R(1),1.5,5)+lbl(F,R(1),1.5,'P',{dx:-16,dy:-10});
+  s+=lbl(F,R(2.3),0.8,'ℍ',{dy:8,it:false});
+  return s+'</svg>';
+}
+
+const FIGS = {
+  "fig:saccheri_quad": figSaccheri,
+  "fig:klein_parallels": figKlein,
+  "fig:uhp_parallels_hist": figUHP,
+  "fig:poincare_models": figPoincare
+};
+
+/* ---------------- build tabs + panels ---------------- */
+const tablist = document.getElementById("tablist");
+const main = document.getElementById("main");
+const panels = {};
+
+CHAPTERS.forEach(function(ch){
+  const b = document.createElement("button");
+  b.className="tab"; b.id="tab-"+ch.id; b.setAttribute("role","tab"); b.setAttribute("aria-controls",ch.id);
+  b.innerHTML='<span class="num">'+ch.num+'</span><span>'+ch.short+'</span>'+(ch.full?'':'<span class="dot" title="'+S.draftTag+'"></span>');
+  b.addEventListener("click",function(){ show(ch.id,true); });
+  tablist.appendChild(b);
+
+  const sec = document.createElement("section");
+  sec.id=ch.id; sec.setAttribute("role","tabpanel"); sec.setAttribute("aria-labelledby","tab-"+ch.id); sec.hidden=true;
+  if(ch.full){
+    const tpl = document.getElementById(LANG+"-"+ch.id);
+    sec.className="chapter has-toc";
+    sec.innerHTML='<nav class="toc" aria-label="'+S.contents+'"><div class="toc-inner"><details open><summary>'+S.contents+'</summary><ol id="toc-'+ch.id+'"></ol></details></div></nav><article class="book">'+tpl.innerHTML+'</article>';
+  } else {
+    sec.className="chapter";
+    const eyebrow = ch.appendix ? S.appendix : S.chapter+" "+ch.num;
+    let h='<article class="book"><p class="eyebrow">'+eyebrow+'</p><h2 class="ch-title">'+ch.title+'</h2>';
+    h+='<div class="draft-banner"><strong>'+S.draftTag+'</strong><span>'+S.draftMsg+'</span></div>';
+    h+='<p class="sample-label">'+S.sampleText+'</p>';
+    ch.sample.forEach(function(t){ h+='<p>'+t+'</p>'; });
+    h+='<p class="sample-label">'+S.sampleEx+'</p><div class="exercise"><p>'+ch.ex+'</p></div>';
+    if(ch.sections.length){
+      h+='<p class="sample-label">'+S.planned+'</p><ol class="planned">';
+      ch.sections.forEach(function(t){ h+='<li>'+t+'</li>'; });
+      h+='</ol>';
+    }
+    sec.innerHTML=h+'</article>';
+  }
+  main.appendChild(sec); panels[ch.id]=sec;
+});
+
+addPortraits(panels.ch2);
+document.querySelectorAll("[data-fig]").forEach(function(el){
+  const f = FIGS[el.getAttribute("data-fig")];
+  el.innerHTML = f ? f() : '<p class="fig-pending">This figure is in the thesis PDF; the web version is being drawn.</p>';
+  if(el.hasAttribute("data-fig-stale")) el.insertAdjacentHTML("beforeend",'<p class="fig-pending">This figure was changed in the thesis; the web drawing may still show the previous version.</p>');
+});
+
+/* table of contents for chapter 2 */
+(function(){
+  const ol = document.getElementById("toc-ch2");
+  const heads = panels.ch2.querySelectorAll(".book h2.sec, .book h3");
+  heads.forEach(function(h){
+    const li=document.createElement("li"), a=document.createElement("a");
+    a.href="#"+h.id; a.className = h.tagName==="H3" ? "lvl3" : "lvl2";
+    a.textContent = h.textContent.replace(/^(\d+(\.\d+)*)/,"$1 ");
+    li.appendChild(a); ol.appendChild(li);
+  });
+  // highlight current section
+  const links = ol.querySelectorAll("a");
+  if("IntersectionObserver" in window){
+    const io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          links.forEach(function(l){ l.classList.toggle("on", l.getAttribute("href")==="#"+e.target.id); });
+        }
+      });
+    },{rootMargin:"-15% 0px -75% 0px"});
+    heads.forEach(function(h){ io.observe(h); });
+  }
+})();
+
+/* math */
+function renderMath(){
+  if(!window.renderMathInElement) return;
+  try{
+    renderMathInElement(main,{
+      delimiters:[{left:"$$",right:"$$",display:true},{left:"$",right:"$",display:false}],
+      output:"mathml", throwOnError:false,
+      macros:{"\\DD":"\\mathbb{D}","\\HH":"\\mathbb{H}","\\CC":"\\mathbb{C}","\\RR":"\\mathbb{R}"}
+    });
+    // Chrome's MathML ignores mathvariant="double-struck": swap in the Unicode letters.
+    const BB={D:"\u{1D53B}",H:"\u210D",C:"\u2102",R:"\u211D"};
+    main.querySelectorAll('mi[mathvariant="double-struck"]').forEach(function(mi){
+      const c=mi.textContent; if(BB[c]){ mi.textContent=BB[c]; mi.setAttribute("mathvariant","normal"); }
+    });
+  }catch(e){}
+}
+renderMath();
+
+/* ---------------- routing ---------------- */
+function owner(id){
+  if(panels[id]) return id;
+  const el = document.getElementById(id);
+  if(!el) return null;
+  const p = el.closest('[role="tabpanel"]');
+  return p ? p.id : null;
+}
+function show(id,fromClick){
+  Object.keys(panels).forEach(function(k){
+    panels[k].hidden = k!==id;
+    document.getElementById("tab-"+k).setAttribute("aria-selected", k===id ? "true":"false");
+  });
+  const tab=document.getElementById("tab-"+id);
+  tab.scrollIntoView({block:"nearest",inline:"nearest"});
+  save("tc-tab",id);
+  if(fromClick){
+    try{ history.replaceState(null,"","#"+id); }catch(e){}
+    window.scrollTo({top:0});
+  }
+}
+function go(hash){
+  const id = (hash||"").replace(/^#/,"");
+  const o = id && owner(id);
+  if(!o) return false;
+  show(o,false);
+  if(id!==o){
+    const el=document.getElementById(id);
+    requestAnimationFrame(function(){
+      el.scrollIntoView({block:"start"});
+      if(id.indexOf("bib-")===0){
+        const dd = el.nextElementSibling;
+        [el,dd].forEach(function(n){ n.classList.remove("flash"); void n.offsetWidth; n.classList.add("flash"); });
+      }
+    });
+  } else window.scrollTo({top:0});
+  return true;
+}
+main.addEventListener("click",function(e){
+  const a = e.target.closest('a[href^="#"]');
+  if(!a) return;
+  e.preventDefault();
+  const h=a.getAttribute("href");
+  if(go(h)){ try{ history.replaceState(null,"",h); }catch(err){} }
+});
+window.addEventListener("hashchange",function(){ go(location.hash); });
+
+if(!go(location.hash)){
+  const last = load("tc-tab");
+  show(panels[last] ? last : "ch2", false);
+}
+})();
+</script>
