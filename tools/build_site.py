@@ -18,6 +18,8 @@ figure changes, the build warns and the page shows a note under the figure
 until the drawing is updated and the lock refreshed (--accept-figures).
 """
 import argparse, hashlib, html, json, os, re, sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import tikz2svg
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -454,9 +456,16 @@ class Chapter:
         label = lm.group(1) if lm else "fig%d" % n
         tm = re.search(r"\\begin\{tikzpicture\}.*?\\end\{tikzpicture\}", body, re.S)
         tikz = tm.group(0) if tm else ""
-        self.figs[label] = tikz
-        return ('<figure id="fig-%d-%d">\n  <div class="fig-wrap" data-fig="%s"%%(STALE:%s)s></div>\n  <figcaption><b>Figure %d.%d</b> %s</figcaption>\n</figure>'
-                % (self.num, n, label, label, self.num, n, self.text(caption)))
+        aria = html.escape(re.sub("<[^>]+>", "", self.text(caption))[:140], quote=True)
+        try:
+            svg = tikz2svg.convert(tikz, aria, re.sub(r"\W", "", label))
+            inner = '<div class="fig-wrap">' + svg + "</div>"          # converted automatically
+        except tikz2svg.Unsupported as why:
+            self.figs[label] = tikz                                    # needs the hand drawing in src/page.html
+            self.why = getattr(self, "why", {}); self.why[label] = str(why)
+            inner = '<div class="fig-wrap" data-fig="%s"%%(STALE:%s)s></div>' % (label, label)
+        return ('<figure id="fig-%d-%d">\n  %s\n  <figcaption><b>Figure %d.%d</b> %s</figcaption>\n</figure>'
+                % (self.num, n, inner, self.num, n, self.text(caption)))
 
     def bibliography(self, heading):
         es = sorted((self.bib[k] for k in self.cited), key=sort_key)
@@ -508,7 +517,7 @@ def main():
                 lock[label] = h
             if lock.get(label) != h:
                 stale[label] = True
-                warn("figure %s changed in the thesis (or has no web drawing yet): redraw it in src/page.html, then run with --accept-figures" % label)
+                warn("figure %s cannot be converted automatically (%s) and its TikZ changed since the hand drawing was made: redraw it in src/page.html, then run with --accept-figures" % (label, ch.why.get(label, "")))
         body = re.sub(r"%\(STALE:([^)]*)\)s", lambda m: " data-fig-stale" if stale.get(m.group(1)) else "", body)
         marker = "<!--BUILD:%s-->" % tab.upper()
         assert marker in page, marker

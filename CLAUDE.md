@@ -18,10 +18,11 @@ This repository publishes https://submarrin.github.io/non-euclidean/ (GitHub Pag
 - Only supervisor-approved files are listed in `CHAPTERS`. Add a chapter there only when the author says it is approved.
 
 ## Figures
-TikZ cannot be converted automatically. Each figure label has a hand-drawn SVG function in
-`src/page.html` (`FIGS`), made from the TikZ coordinates. `tools/figures.lock.json` stores a hash of the
-TikZ code each drawing matches. When a thesis figure changes, the build warns and the page shows a note
-under that figure. Then: redraw it in `src/page.html` from the new TikZ, rebuild with `--accept-figures`, commit.
+Figures are converted from the thesis TikZ at build time by `tools/tikz2svg.py` (scopes, paths, plot
+coordinates, arcs, circles, nodes, foreach, clip, fills). So a changed figure in the thesis updates the site
+automatically. If a figure uses TikZ the converter does not support, the build warns and falls back to a
+hand-drawn SVG in `src/page.html` (`FIGS`), guarded by a hash in `tools/figures.lock.json`; without a
+fallback the page shows a short "being drawn" note. Prefer extending the converter over hand drawings.
 
 ## Content rules (from the author)
 - Use only material from the thesis files. Citations exactly as in the thesis (biblatex alphabetic labels).

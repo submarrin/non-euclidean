@@ -335,46 +335,6 @@ function figSaccheri(){
   return s+'</svg>';
 }
 
-function figPoincare(){
-  const U=95, W=8.4*U, H=4.05*U;
-  // disk centred at tikz (-2.2,0); half-plane at xshift 2.2. Map tikz (x,y) → svg.
-  const X=(x)=> (x+4.2)*U, Y=(y)=> (2.6-y)*U;
-  const P=(x,y)=>X(x).toFixed(1)+","+Y(y).toFixed(1);
-  function arcPath(cx,cy,r,a0,a1,n){ n=n||40; let pts=[]; for(let i=0;i<=n;i++){const a=(a0+(a1-a0)*i/n)*Math.PI/180; pts.push(P(cx+r*Math.cos(a),cy+r*Math.sin(a)));} return "M"+pts.join(" L"); }
-  const dx=-2.2, hx=2.2, r3=Math.sqrt(3);
-  let s='<svg viewBox="0 0 '+W.toFixed(0)+' '+H.toFixed(0)+'" role="img" aria-label="Poincaré disk and upper half-plane with geodesics">';
-  // --- disk
-  s+='<circle cx="'+X(dx)+'" cy="'+Y(0)+'" r="'+U+'" fill="var(--fig-fill)" stroke="var(--fig-1)" stroke-width="2.6"/>';
-  s+='<g fill="none" stroke-width="3" stroke-linecap="round">';
-  s+='<path d="M'+P(dx,-1)+' L'+P(dx,1)+'" stroke="var(--fig-2)"/>';                         // diameter
-  s+='<path d="'+arcPath(dx+2,0,r3,150,210)+'" stroke="var(--fig-3)"/>';                     // centre (2,0), r=√3
-  s+='<path d="'+arcPath(dx,2,r3,-60,-120)+'" stroke="var(--fig-1)"/>';                      // centre (0,2), r=√3
-  s+='</g>';
-  [0,90,180,270].forEach(function(a){ const t=a*Math.PI/180; s+='<circle cx="'+X(dx+Math.cos(t))+'" cy="'+Y(Math.sin(t))+'" r="3" fill="var(--fig-1)"/>'; });
-    s+='<text x="'+(X(dx+1)+8)+'" y="'+(Y(0)+8)+'" font-size="22" fill="var(--fig-1)">∂𝔻</text>';
-  s+='<text x="'+X(dx)+'" y="'+(Y(1.12)-4)+'" text-anchor="middle" font-size="23" font-weight="600" fill="var(--fig-1)">Poincaré Disk 𝔻</text>';
-  s+='<text x="'+X(dx)+'" y="'+(Y(-1.12)+24)+'" text-anchor="middle" font-size="20" fill="var(--fig-1)" opacity=".75">conformal</text>';
-  // --- half-plane
-  s+='<rect x="'+X(hx-1.3)+'" y="'+Y(2.0)+'" width="'+(2.6*U)+'" height="'+(2*U)+'" fill="var(--fig-fill)"/>';
-  s+='<path d="M'+P(hx-1.3,0)+' L'+P(hx+1.3,0)+'" stroke="var(--fig-1)" stroke-width="2.6"/>';
-  s+='<g fill="none" stroke-width="3" stroke-linecap="round">';
-  s+='<path d="M'+P(hx,0)+' L'+P(hx,2)+'" stroke="var(--fig-2)"/>';
-  s+='<path d="'+arcPath(hx-0.6,0,0.7,180,0)+'" stroke="var(--fig-3)"/>';
-  s+='<path d="'+arcPath(hx+0.7,0,0.5,180,0)+'" stroke="var(--fig-1)"/>';
-  s+='</g>';
-    s+='<text x="'+(X(hx+1.3)+8)+'" y="'+(Y(0)+8)+'" font-size="22" fill="var(--fig-1)">ℝ</text>';
-  s+='<text x="'+(X(hx-1.25))+'" y="'+(Y(1.5)+4)+'" font-size="20" font-style="italic" fill="var(--fig-1)">y &gt; 0</text>';
-  s+='<text x="'+X(hx)+'" y="'+(Y(2.08)-4)+'" text-anchor="middle" font-size="23" font-weight="600" fill="var(--fig-1)">Upper Half-Plane ℍ</text>';
-  s+='<text x="'+X(hx)+'" y="'+(Y(-0.12)+24)+'" text-anchor="middle" font-size="20" fill="var(--fig-1)" opacity=".75">conformal</text>';
-  // --- Cayley map arrow
-  const ay=Y(0.5), ax0=X(-0.62), ax1=X(0.62);
-  s+='<g stroke="var(--muted)" stroke-width="2.2" fill="none"><path d="M'+ax0+','+ay+' L'+ax1+','+ay+'"/><path d="M'+(ax0+10)+','+(ay-6)+' L'+ax0+','+ay+' L'+(ax0+10)+','+(ay+6)+'"/><path d="M'+(ax1-10)+','+(ay-6)+' L'+ax1+','+ay+' L'+(ax1-10)+','+(ay+6)+'"/></g>';
-  s+='<text x="'+X(0)+'" y="'+(ay-10)+'" text-anchor="middle" font-size="20" fill="var(--muted)">Cayley map <tspan font-style="italic">φ</tspan></text>';
-  return s+'</svg>';
-}
-
-
-/* Shared helpers for figures drawn from TikZ coordinates (y up). */
 function frame(x0,x1,y0,y1,U){
   const X=(x)=>((x-x0)*U), Y=(y)=>((y1-y)*U);
   return {X:X,Y:Y,W:(x1-x0)*U,H:(y1-y0)*U,P:(x,y)=>X(x).toFixed(1)+","+Y(y).toFixed(1),
@@ -415,7 +375,6 @@ function figKlein(){
   return s+'</svg>';
 }
 
-/* fig:uhp_parallels_hist — after Sosinsky 2020, Fig. 2 (coordinates from the thesis TikZ). */
 function figUHP(){
   const F=frame(-3.15,7.75,-0.35,2.75,80);
   let s='<svg viewBox="0 0 '+F.W.toFixed(0)+' '+F.H.toFixed(0)+'" role="img" aria-label="Parallels in the upper half-plane model">';
@@ -447,11 +406,11 @@ function figUHP(){
   return s+'</svg>';
 }
 
+/* Fallback drawings. Figures are normally converted from the thesis TikZ at build time
+   (tools/tikz2svg.py); these are used only if that conversion fails for a label. */
 const FIGS = {
   "fig:saccheri_quad": figSaccheri,
-  "fig:klein_parallels": figKlein,
-  "fig:uhp_parallels_hist": figUHP,
-  "fig:poincare_models": figPoincare
+  "fig:klein_parallels": figKlein
 };
 
 /* ---------------- build tabs + panels ---------------- */
