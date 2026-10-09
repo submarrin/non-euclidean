@@ -604,8 +604,7 @@ function seg(F,a,b,o){ o=o||{}; return '<path d="M'+F.P(a[0],a[1])+' L'+F.P(b[0]
 /* Fallback drawings. Figures are normally converted from the thesis TikZ at build time
    (tools/tikz2svg.py); these are used only if that conversion fails for a label. */
 const FIGS = {
-  "fig:saccheri_quad": figSaccheri,
-  "fig:klein_parallels": figKlein
+  "fig:saccheri_quad": figSaccheri
 };
 
 /* ---------------- build tabs + panels ---------------- */
