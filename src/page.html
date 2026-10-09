@@ -344,68 +344,6 @@ function dot(F,x,y,r,hollow){ return '<circle cx="'+F.X(x).toFixed(1)+'" cy="'+F
 function lbl(F,x,y,t,o){ o=o||{}; return '<text x="'+(F.X(x)+(o.dx||0)).toFixed(1)+'" y="'+(F.Y(y)+(o.dy||0)).toFixed(1)+'" font-size="'+(o.size||24)+'" font-style="'+(o.it===false?'normal':'italic')+'" text-anchor="'+(o.anchor||'middle')+'" fill="var(--fig-1)">'+t+'</text>'; }
 function seg(F,a,b,o){ o=o||{}; return '<path d="M'+F.P(a[0],a[1])+' L'+F.P(b[0],b[1])+'" stroke="'+(o.col||'var(--fig-1)')+'" stroke-width="'+(o.w||2.6)+'"'+(o.dash?' stroke-dasharray="'+o.dash+'"':'')+' fill="none" stroke-linecap="round"/>'; }
 
-/* fig:klein_parallels — after Sosinsky 2020, Fig. 3 (coordinates from the thesis TikZ, scale 2). */
-function figKlein(){
-  const F=frame(-1.2,3.8,-1.25,1.2,120);
-  let s='<svg viewBox="0 0 '+F.W.toFixed(0)+' '+F.H.toFixed(0)+'" role="img" aria-label="Klein model: perpendicular from P to a line, and the two parallels through P">';
-  // LEFT
-  s+='<circle cx="'+F.X(0)+'" cy="'+F.Y(0)+'" r="'+120+'" fill="var(--fig-fill)" stroke="var(--fig-1)" stroke-width="2.2" stroke-dasharray="2 6" stroke-linecap="round"/>';
-  s+=seg(F,[-0.8,-0.6],[0.8,-0.6]);
-  s+=seg(F,[0.2165,-0.6],[0.45,0.55]);
-  s+='<path d="M'+F.P(0.3065,-0.6)+' L'+F.P(0.3244,-0.5118)+' L'+F.P(0.2344,-0.5118)+'" stroke="var(--fig-1)" stroke-width="1.6" fill="none"/>';
-  s+=dot(F,0.2165,-0.6,4.5)+lbl(F,0.2165,-0.6,'H',{dy:30});
-  s+=dot(F,0.45,0.55,4.5)+lbl(F,0.45,0.55,'P',{dx:-14,dy:-10});
-  s+=dot(F,-0.8,-0.6,4.5,true)+lbl(F,-0.8,-0.6,'X',{dx:-14,dy:26});
-  s+=dot(F,0.8,-0.6,4.5,true)+lbl(F,0.8,-0.6,'Y',{dx:14,dy:26});
-  // RIGHT (xshift 2.6)
-  const o=2.6, R=function(p){return [p[0]+o,p[1]];};
-  const Px=0.15+o;
-  s+='<circle cx="'+F.X(o)+'" cy="'+F.Y(0)+'" r="'+120+'" fill="var(--fig-fill)" stroke="none"/>';
-  const w1=F.arc(o,0,1,170.8,244.23), w2=F.arc(o,0,1,-6.8,49.77);
-  s+='<path d="M'+F.P(Px,0)+' L'+w1.join(' L')+' Z" fill="var(--fig-3)" fill-opacity=".35" stroke="none"/>';
-  s+='<path d="M'+F.P(Px,0)+' L'+w2.join(' L')+' Z" fill="var(--fig-3)" fill-opacity=".35" stroke="none"/>';
-  s+='<circle cx="'+F.X(o)+'" cy="'+F.Y(0)+'" r="'+120+'" fill="none" stroke="var(--fig-1)" stroke-width="2.2" stroke-dasharray="2 6" stroke-linecap="round"/>';
-  s+=seg(F,R([-0.9871,0.1598]),R([0.993,-0.1185]));
-  s+=seg(F,R([-0.4348,-0.9005]),R([0.6458,0.7635]));
-  s+=seg(F,R([0.993,-0.1185]),R([-0.4348,-0.9005]));
-  s+=seg(F,R([-0.9609,-0.277]),R([0.9784,0.2066]),{w:2,dash:'9 7'});
-  [[-0.9871,0.1598],[0.993,-0.1185],[-0.4348,-0.9005],[0.6458,0.7635],[-0.9609,-0.277],[0.9784,0.2066]].forEach(function(q){ s+=dot(F,q[0]+o,q[1],4,true); });
-  s+=dot(F,Px,0,4.5)+lbl(F,Px,0,'P',{dy:32});
-  s+=lbl(F,-0.5+o,0.26,'m',{dy:8})+lbl(F,0.42+o,0.62,'k',{dy:8})+lbl(F,0.35+o,-0.68,'ℓ',{dy:8})+lbl(F,-0.45+o,0.7,'𝔻',{dy:8,it:false});
-  return s+'</svg>';
-}
-
-function figUHP(){
-  const F=frame(-3.15,7.75,-0.35,2.75,80);
-  let s='<svg viewBox="0 0 '+F.W.toFixed(0)+' '+F.H.toFixed(0)+'" role="img" aria-label="Parallels in the upper half-plane model">';
-  // LEFT: l = semicircle r=1 centred at 0, P=(0,1.6)
-  const c1=F.arc(0.78,0,1.78,0,180), c2=F.arc(-0.78,0,1.78,0,180);
-  s+='<path d="M'+c1.join(' L')+' Z M'+c2.join(' L')+' Z" fill="var(--fig-3)" fill-opacity=".35" fill-rule="evenodd" stroke="none"/>';
-  s+='<path d="M'+c1.join(' L')+'" stroke="var(--fig-1)" stroke-width="2" fill="none"/>';
-  s+='<path d="M'+c2.join(' L')+'" stroke="var(--fig-1)" stroke-width="2" fill="none"/>';
-  s+='<path d="M'+F.arc(0,0,1.6,0,180).join(' L')+'" stroke="var(--fig-1)" stroke-width="2" stroke-dasharray="9 7" fill="none"/>';
-  s+='<path d="M'+F.arc(0,0,1,0,180).join(' L')+'" stroke="var(--fig-1)" stroke-width="3.6" fill="none"/>';
-  s+=seg(F,[-3,0],[3,0],{w:2.2,dash:'2 6'});
-  s+=dot(F,0,1.6,5)+lbl(F,0,1.6,'P',{dy:-14});
-  s+=lbl(F,0,0.55,'ℓ',{dy:8})+lbl(F,-2.5,1.9,'ℍ',{dy:8,it:false});
-  // RIGHT (xshift 4): l = vertical ray x=0, P=(1,1.5); clipped to [-0.1,3.6]x[0,2.5]
-  const o=4, R=function(x){return x+o;};
-  s+='<defs><clipPath id="uhp-clip"><rect x="'+F.X(R(-0.1))+'" y="'+F.Y(2.5)+'" width="'+(3.7*80)+'" height="'+(2.5*80)+'"/></clipPath></defs><g clip-path="url(#uhp-clip)">';
-  const a1=F.arc(R(1.625),0,1.625,180,112.62), a2=F.arc(R(1.625),0,1.625,0,112.62);
-  s+='<path d="M'+a1.join(' L')+' L'+F.P(R(1),0)+' Z" fill="var(--fig-3)" fill-opacity=".35" stroke="none"/>';
-  s+='<path d="M'+F.P(R(1),1.5)+' L'+F.P(R(1),2.5)+' L'+F.P(R(3.6),2.5)+' L'+F.P(R(3.6),0)+' L'+a2.join(' L')+' Z" fill="var(--fig-3)" fill-opacity=".35" stroke="none"/>';
-  s+='<path d="M'+F.arc(R(1.625),0,1.625,0,180).join(' L')+'" stroke="var(--fig-1)" stroke-width="2" fill="none"/>';
-  s+=seg(F,[R(1),0],[R(1),2.5],{w:2});
-  s+='<path d="M'+F.arc(R(2.575),0,2.175,0,180).join(' L')+'" stroke="var(--fig-1)" stroke-width="2" stroke-dasharray="9 7" fill="none"/>';
-  s+='</g>';
-  s+=seg(F,[R(0),0],[R(0),2.5],{w:3.6});
-  s+=lbl(F,R(0),2.2,'ℓ',{dx:-16,dy:8});
-  s+=seg(F,[R(-0.1),0],[R(3.6),0],{w:2.2,dash:'2 6'});
-  s+=dot(F,R(1),1.5,5)+lbl(F,R(1),1.5,'P',{dx:-16,dy:-10});
-  s+=lbl(F,R(2.3),0.8,'ℍ',{dy:8,it:false});
-  return s+'</svg>';
-}
-
 /* Fallback drawings. Figures are normally converted from the thesis TikZ at build time
    (tools/tikz2svg.py); these are used only if that conversion fails for a label. */
 const FIGS = {
