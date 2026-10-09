@@ -169,6 +169,44 @@ tr:last-child td{border-bottom:0}
 .planned{font-family:var(--f-ui);font-size:.88rem;color:var(--muted);padding-left:1.2rem}
 .planned li{margin-bottom:.25rem}
 
+
+/* ---------- sandbox ---------- */
+.sandbox{display:grid;grid-template-columns:minmax(0,1fr);gap:1.5rem;max-width:72rem}
+@media (min-width:1000px){ .sandbox{grid-template-columns:minmax(0,1fr) 22rem;align-items:start} }
+.sb-intro{max-width:var(--measure)}
+.sb-stage{background:var(--sheet);border:1px solid var(--rule);border-radius:6px;padding:.75rem;scroll-margin-top:4.5rem;min-width:0}
+.sb-bar{display:flex;flex-wrap:wrap;gap:.35rem;align-items:center;margin-bottom:.6rem;font-family:var(--f-ui);font-size:.82rem}
+.sb-bar .grp{display:flex;flex-wrap:wrap;gap:.3rem}
+.sb-bar .sep{flex:1 1 .5rem}
+.sb-btn{font:inherit;font-family:var(--f-ui);font-size:.82rem;color:var(--ink);background:var(--paper);border:1px solid var(--rule);border-radius:999px;padding:.38rem .75rem;cursor:pointer;line-height:1.1;touch-action:manipulation}
+.sb-btn:hover{border-color:var(--accent)}
+.sb-btn[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--paper)}
+.sb-btn.ghost{background:none}
+.sb-canvas-wrap{position:relative;width:100%}
+.sb-canvas-wrap canvas{display:block;touch-action:none;border-radius:4px;cursor:crosshair}
+.sb-hint{font-family:var(--f-ui);font-size:.8rem;color:var(--muted);margin:.55rem 0 0}
+.sb-side{display:grid;gap:1rem;min-width:0}
+.sb-card{background:var(--sheet);border:1px solid var(--rule);border-radius:6px;padding:.9rem 1rem}
+.sb-card h3{font-family:var(--f-ui);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 .6rem;font-weight:600}
+.sb-readout ul{list-style:none;margin:0;padding:0;display:grid;gap:.45rem;font-family:var(--f-ui);font-size:.88rem;font-variant-numeric:tabular-nums}
+.sb-readout li{display:flex;flex-wrap:wrap;justify-content:space-between;gap:.2rem .6rem}
+.sb-readout li small{flex-basis:100%;color:var(--muted);font-size:.78rem;line-height:1.4}
+.sb-readout li.tri{border-top:1px solid var(--rule);padding-top:.45rem}
+.sb-readout .meter{flex-basis:100%;height:6px;background:var(--fig-fill);border-radius:3px;position:relative;overflow:hidden}
+.sb-readout .meter::after{content:"";position:absolute;right:0;top:0;bottom:0;width:2px;background:var(--ink);opacity:.5}
+.sb-readout .meter i{display:block;height:100%;background:var(--accent)}
+.sb-empty{font-family:var(--f-ui);font-size:.85rem;color:var(--muted);margin:0}
+.sb-task{border-top:1px solid var(--rule);padding:.8rem 0 .2rem}
+.sb-task:first-of-type{border-top:0;padding-top:0}
+.sb-task h4{font-family:var(--f-display);font-size:1.2rem;font-weight:600;margin:0 0 .3rem}
+.sb-task p{font-size:.95rem;margin:0 0 .6rem}
+.sb-task details{font-size:.92rem;margin:.4rem 0 .4rem}
+.sb-task summary{font-family:var(--f-ui);font-size:.82rem;color:var(--accent);cursor:pointer}
+.sb-task details p{margin:.5rem 0 0}
+.sb-slider{display:grid;grid-template-columns:6.5rem minmax(0,1fr) 2.2rem;gap:.5rem;align-items:center;font-family:var(--f-ui);font-size:.8rem;color:var(--muted);margin:.35rem 0}
+.sb-slider input{width:100%;accent-color:var(--accent)}
+.sb-credit{font-family:var(--f-ui);font-size:.78rem;color:var(--muted);line-height:1.5}
+
 footer{max-width:84rem;margin:0 auto;padding:1.5rem 16px 2.5rem;border-top:1px solid var(--rule);font-family:var(--f-ui);font-size:.78rem;color:var(--muted)}
 </style>
 
@@ -452,6 +490,77 @@ footer{max-width:84rem;margin:0 auto;padding:1.5rem 16px 2.5rem;border-top:1px s
 </section>
 </template>
 
+
+<template id="sandbox-tpl">
+<div class="sb-intro">
+  <p class="eyebrow">Interactive</p>
+  <h2 class="ch-title">Hyperbolic sandbox</h2>
+  <p>Draw in the Poincaré disk with points, lines, segments and circles, and measure hyperbolic distances and angles. Switch to the upper half-plane to see the same figure in the other model. Works with a mouse or a finger.</p>
+</div>
+<div class="sandbox">
+  <div class="sb-stage">
+    <div class="sb-bar" role="toolbar" aria-label="Drawing tools">
+      <div class="grp">
+        <button class="sb-btn" data-tool="move" aria-pressed="true">Move</button>
+        <button class="sb-btn" data-tool="point" aria-pressed="false">Point</button>
+        <button class="sb-btn" data-tool="line" aria-pressed="false">Line</button>
+        <button class="sb-btn" data-tool="segment" aria-pressed="false">Segment</button>
+        <button class="sb-btn" data-tool="circle" aria-pressed="false">Circle</button>
+      </div>
+      <div class="grp">
+        <button class="sb-btn" data-tool="distance" aria-pressed="false">Distance</button>
+        <button class="sb-btn" data-tool="angle" aria-pressed="false">Angle</button>
+        <button class="sb-btn" data-tool="triangle" aria-pressed="false">Triangle</button>
+      </div>
+      <span class="sep"></span>
+      <div class="grp">
+        <button class="sb-btn ghost" data-act="undo">Undo</button>
+        <button class="sb-btn ghost" data-act="clear">Clear</button>
+      </div>
+    </div>
+    <div class="sb-bar" role="group" aria-label="Model">
+      <div class="grp">
+        <button class="sb-btn" data-model="disk" aria-pressed="true">Poincaré disk</button>
+        <button class="sb-btn" data-model="half" aria-pressed="false">Upper half-plane</button>
+      </div>
+    </div>
+    <div class="sb-canvas-wrap"><canvas aria-label="Drawing area: hyperbolic plane"></canvas></div>
+    <p class="sb-hint" data-hint>Drag any point.</p>
+  </div>
+  <div class="sb-side">
+    <section class="sb-card"><h3>Measurements</h3><div class="sb-readout" data-readout></div></section>
+    <section class="sb-card">
+      <h3>Try this</h3>
+      <div class="sb-task">
+        <h4>1. The angle sum of a triangle</h4>
+        <p>Draw a triangle. What is its angle sum? Make it bigger. What happens?</p>
+        <button class="sb-btn" data-scene="triangle">Load a triangle</button>
+        <details><summary>What to notice</summary>
+          <p>The sum is always less than 180°. The missing part is the <em>defect</em>, and it grows as the triangle grows. Lambert noticed that the defect of a triangle is proportional to its area (<a class="xref" href="#s2-2-3">Section 2.2.3</a>); Lobachevsky's formula is area $= q^2\delta$ (<a class="xref" href="#s2-3-2">Section 2.3.2</a>).</p></details>
+      </div>
+      <div class="sb-task">
+        <h4>2. More than one parallel</h4>
+        <p>Here are a line <i>XY</i> and a point <i>P</i> not on it. Find two different lines through <i>P</i> that never meet the line <i>XY</i>.</p>
+        <button class="sb-btn" data-scene="parallels">Load line and point</button>
+        <details><summary>What to notice</summary>
+          <p>There are infinitely many such lines, so Playfair's axiom fails (<a class="xref" href="#hn-playfair">Historical Note 2.1</a>). The two limiting ones meet <i>XY</i> only at the boundary: these are the two parallels of Lobachevsky's geometry (<a class="xref" href="#s2-4-4">Section 2.4.4</a>).</p></details>
+      </div>
+      <div class="sb-task">
+        <h4>3. Saccheri's quadrilateral</h4>
+        <p>Right angles at <i>A</i> and <i>B</i>, equal legs <i>AD</i> = <i>BC</i>. Measure the summit angles at <i>C</i> and <i>D</i>.</p>
+        <button class="sb-btn" data-scene="saccheri">Build the quadrilateral</button>
+        <label class="sb-slider" for="sb-base"><span>Base <i>AB</i></span><input id="sb-base" type="range" min="0.4" max="4" step="0.1" value="1.6"><span data-val="sb-base">1.6</span></label>
+        <label class="sb-slider" for="sb-leg"><span>Legs <i>AD</i>, <i>BC</i></span><input id="sb-leg" type="range" min="0.2" max="3" step="0.1" value="1.2"><span data-val="sb-leg">1.2</span></label>
+        <details><summary>What to notice</summary>
+          <p>The two summit angles are equal and acute: Saccheri's hypothesis of the acute angle (H3), the case realised in hyperbolic geometry (<a class="xref" href="#s2-2-2">Section 2.2.2</a>). Make the quadrilateral larger and watch them shrink.</p></details>
+      </div>
+    </section>
+    <p class="sb-credit">Inspired by <a href="https://www.cs.unm.edu/~joel/NonEuclid/NonEuclid.html" target="_blank" rel="noopener">NonEuclid</a>, an interactive Java program for hyperbolic constructions by Joel Castellanos, Joe Dan Austin and Ervan Darnell. This sandbox is a separate program written for this site.</p>
+  </div>
+</div>
+</template>
+
+<script src="sandbox.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
 <script>
@@ -505,7 +614,8 @@ const CHAPTERS = [
   {id:"app", num:"A", short:"Worksheet", title:"Appendix: Worksheet", appendix:true,
    sections:[],
    sample:["The appendix will contain a printable worksheet that accompanies the lessons.","Below is one sample item."],
-   ex:"Complete the table using Section 2.4.5.<br><br><table style=\"min-width:0\"><thead><tr><th>Geometry</th><th>Parallels through an external point</th><th>Angle sum of a triangle</th></tr></thead><tbody><tr><td>Euclidean</td><td>…</td><td>…</td></tr><tr><td>Hyperbolic</td><td>…</td><td>…</td></tr><tr><td>Elliptic</td><td>(none)</td><td>…</td></tr></tbody></table>"}
+   ex:"Complete the table using Section 2.4.5.<br><br><table style=\"min-width:0\"><thead><tr><th>Geometry</th><th>Parallels through an external point</th><th>Angle sum of a triangle</th></tr></thead><tbody><tr><td>Euclidean</td><td>…</td><td>…</td></tr><tr><td>Hyperbolic</td><td>…</td><td>…</td></tr><tr><td>Elliptic</td><td>(none)</td><td>…</td></tr></tbody></table>"},
+  {id:"sandbox", num:"✎", short:"Sandbox", sandbox:true}
 ];
 
 
@@ -615,13 +725,16 @@ const panels = {};
 CHAPTERS.forEach(function(ch){
   const b = document.createElement("button");
   b.className="tab"; b.id="tab-"+ch.id; b.setAttribute("role","tab"); b.setAttribute("aria-controls",ch.id);
-  b.innerHTML='<span class="num">'+ch.num+'</span><span>'+ch.short+'</span>'+(ch.full?'':'<span class="dot" title="'+S.draftTag+'"></span>');
+  b.innerHTML='<span class="num">'+ch.num+'</span><span>'+ch.short+'</span>'+(ch.full||ch.sandbox?'':'<span class="dot" title="'+S.draftTag+'"></span>');
   b.addEventListener("click",function(){ show(ch.id,true); });
   tablist.appendChild(b);
 
   const sec = document.createElement("section");
   sec.id=ch.id; sec.setAttribute("role","tabpanel"); sec.setAttribute("aria-labelledby","tab-"+ch.id); sec.hidden=true;
-  if(ch.full){
+  if(ch.sandbox){
+    sec.className="chapter";
+    sec.innerHTML=document.getElementById("sandbox-tpl").innerHTML;
+  } else if(ch.full){
     const tpl = document.getElementById(LANG+"-"+ch.id);
     sec.className="chapter has-toc";
     sec.innerHTML='<nav class="toc" aria-label="'+S.contents+'"><div class="toc-inner"><details open><summary>'+S.contents+'</summary><ol id="toc-'+ch.id+'"></ol></details></div></nav><article class="book">'+tpl.innerHTML+'</article>';
@@ -644,6 +757,7 @@ CHAPTERS.forEach(function(ch){
 });
 
 addPortraits(panels.ch2);
+if(window.Sandbox && panels.sandbox){ try{ window.Sandbox.mount(panels.sandbox); }catch(e){ console.error(e); } }
 document.querySelectorAll("[data-fig]").forEach(function(el){
   const f = FIGS[el.getAttribute("data-fig")];
   el.innerHTML = f ? f() : '<p class="fig-pending">This figure is in the thesis PDF; the web version is being drawn.</p>';

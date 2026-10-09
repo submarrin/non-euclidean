@@ -15,4 +15,5 @@
 - [x] 1. Skeleton with tabs and chapter 2 text
 - [ ] 2. Self-check quizzes and reading tracker
 - [ ] 3. Timeline (portraits already added beside the sections)
-- [ ] 4. Hyperbolic drawing sandbox
+- [x] 4. Hyperbolic drawing sandbox (Sandbox tab: disk + half-plane, points, lines, segments, circles, distance, angle, triangle angle sum, 3 guided tasks)
+- [ ] Sandbox ideas: perpendicular and midpoint tools, Klein model view, Italian/Russian labels
