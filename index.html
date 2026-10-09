@@ -499,7 +499,7 @@ const BIB = {
   Sos20:"Sosinsky, On the Equivalence of Three Models of the Lobachevsky Plane (2020)"
 };
 
-/* Portraits: public domain only (licence checked on Wikimedia Commons, Oct 2026).
+/* Portraits: public domain, except Bolyai (CC BY-SA 3.0, added at the author's request) (licence checked on Wikimedia Commons, Oct 2026).
    Names and years are taken from the thesis text; credit = artist/date from the Commons file page. */
 const PORTRAITS = {
   "s2-1":   [{who:"Euclid", yrs:"", img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/7/73/Italian_-_Euclid_-_Google_Art_Project.jpg/330px-Italian_-_Euclid_-_Google_Art_Project.jpg", credit:"Jusepe de Ribera, <i>Euclid</i>, c. 1630–35", page:"https://commons.wikimedia.org/wiki/File:Italian_-_Euclid_-_Google_Art_Project.jpg"}],
@@ -510,6 +510,7 @@ const PORTRAITS = {
   "s2-2-4": [{who:"Adrien-Marie Legendre", yrs:"1752–1833", img:"https://upload.wikimedia.org/wikipedia/commons/0/03/Legendre.jpg", credit:"Julien-Léopold Boilly, 1820", page:"https://commons.wikimedia.org/wiki/File:Legendre.jpg"}],
   "s2-3-1": [{who:"Carl Friedrich Gauss", yrs:"1777–1855", img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ec/Carl_Friedrich_Gauss_1840_by_Jensen.jpg/330px-Carl_Friedrich_Gauss_1840_by_Jensen.jpg", credit:"Christian Albrecht Jensen, 1840", page:"https://commons.wikimedia.org/wiki/File:Carl_Friedrich_Gauss_1840_by_Jensen.jpg"}],
   "s2-3-2": [{who:"Nikolai Ivanovich Lobachevsky", yrs:"1792–1856", img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4d/Lobachevsky_03_crop.jpg/330px-Lobachevsky_03_crop.jpg", credit:"Lev Kryukov, 1839", page:"https://commons.wikimedia.org/wiki/File:Lobachevsky_03_crop.jpg"}],
+  "s2-3-3": [{who:"János Bolyai", yrs:"1802–1860", img:"img/bolyai-markos-2012.jpg", credit:"Ferenc Márkos, painting, 2012", lic:'<a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank" rel="noopener">CC BY-SA 3.0</a>', page:"https://commons.wikimedia.org/wiki/File:Bolyai_J%C3%A1nos_(M%C3%A1rkos_Ferenc_festm%C3%A9nye).jpg"}],
   "s2-3-4": [{who:"Bernhard Riemann", yrs:"1826–1866", img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/8/82/Georg_Friedrich_Bernhard_Riemann.jpeg/330px-Georg_Friedrich_Bernhard_Riemann.jpeg", credit:"Photograph, 1863", page:"https://commons.wikimedia.org/wiki/File:Georg_Friedrich_Bernhard_Riemann.jpeg"}],
   "s2-4-1": [{who:"Eugenio Beltrami", yrs:"1835–1900", img:"https://upload.wikimedia.org/wikipedia/commons/2/2d/Beltrami.jpg", credit:"Photograph", page:"https://commons.wikimedia.org/wiki/File:Beltrami.jpg"}],
   "s2-4-2": [{who:"Arthur Cayley", yrs:"1821–1895", img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a9/Arthur_Cayley.jpg/330px-Arthur_Cayley.jpg", credit:"Herbert Beraud, before 1883", page:"https://commons.wikimedia.org/wiki/File:Arthur_Cayley.jpg"}],
@@ -526,7 +527,7 @@ function addPortraits(root){
       f.className="portrait";
       f.innerHTML='<img src="'+pt.img+'" alt="'+pt.who+'" loading="lazy" referrerpolicy="no-referrer">'+
         '<figcaption><span class="who">'+pt.who+'</span>'+(pt.yrs?'<span class="yrs">'+pt.yrs+'</span>':'')+
-        '<span class="credit">'+pt.credit+'. Public domain, <a href="'+pt.page+'" target="_blank" rel="noopener">Wikimedia Commons</a></span></figcaption>';
+        '<span class="credit">'+pt.credit+'. '+(pt.lic||'Public domain')+', <a href="'+pt.page+'" target="_blank" rel="noopener">Wikimedia Commons</a></span></figcaption>';
       anchor.insertAdjacentElement("afterend", f); anchor = f;
     });
   });
