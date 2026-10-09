@@ -17,3 +17,9 @@
 - [ ] 3. Timeline (portraits already added beside the sections)
 - [x] 4. Hyperbolic drawing sandbox (Sandbox tab: disk + half-plane, points, lines, segments, circles, distance, angle, triangle angle sum, 3 guided tasks)
 - [ ] Sandbox ideas: perpendicular and midpoint tools, Klein model view, Italian/Russian labels
+
+## Future work
+- [ ] Hyperbolic art from https://www.cs.unm.edu/~joel/NonEuclid/singer/ (artist page linked from NonEuclid).
+      Before publishing: find the artist's name and licence; images are copyrighted unless stated otherwise,
+      so ask the artist for permission or only link to the page. Alternative: generate our own hyperbolic
+      tessellations in the Sandbox.
