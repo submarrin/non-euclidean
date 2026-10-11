@@ -19,6 +19,8 @@
   --fig-2:#2C5A60;
   --fig-3:#7C8C96;
   --fig-fill:#E7ECE8;
+  --pop-bg:rgba(28,35,46,.88);
+  --pop-ink:#F4F5F1;
   --f-display:"Cormorant Garamond","EB Garamond",Garamond,"Times New Roman",serif;
   --f-body:"Literata",Georgia,"Times New Roman",serif;
   --f-ui:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
@@ -29,6 +31,7 @@
     --paper:#12161B; --sheet:#171C22; --ink:#E1E5DF; --muted:#9AA3AE; --rule:#2B323B;
     --accent:#86BDBD; --accent-soft:#1E2B2E; --draft:#E0BE6E; --draft-soft:#2A2516;
     --fig-1:#E1E5DF; --fig-2:#86BDBD; --fig-3:#8A99A4; --fig-fill:#1E262B;
+    --pop-bg:rgba(225,229,223,.92); --pop-ink:#12161B;
     color-scheme:dark;
   }
 }
@@ -36,6 +39,7 @@
   --paper:#12161B; --sheet:#171C22; --ink:#E1E5DF; --muted:#9AA3AE; --rule:#2B323B;
   --accent:#86BDBD; --accent-soft:#1E2B2E; --draft:#E0BE6E; --draft-soft:#2A2516;
   --fig-1:#E1E5DF; --fig-2:#86BDBD; --fig-3:#8A99A4; --fig-fill:#1E262B;
+  --pop-bg:rgba(225,229,223,.92); --pop-ink:#12161B;
   color-scheme:dark;
 }
 *{box-sizing:border-box}
@@ -113,8 +117,12 @@ math[display="block"]{font-size:1.12em}
 .hnote .hn-title em{text-transform:none;letter-spacing:0;font-size:.95rem;color:var(--ink);font-family:var(--f-body);font-weight:600;font-style:italic;margin-left:.3rem}
 .hnote p:last-child{margin-bottom:0}
 
-a.cite{font-family:var(--f-ui);font-size:.82em;text-decoration:none;white-space:nowrap;color:var(--accent);border-bottom:1px dotted currentColor}
-a.cite:hover{border-bottom-style:solid}
+a.cite{position:relative;display:inline;font-family:var(--f-ui);font-size:.62em;font-weight:600;vertical-align:super;line-height:0;margin-left:1px;color:var(--accent);text-decoration:none;cursor:pointer}
+a.cite::before{content:"";position:absolute;left:50%;top:50%;width:22px;height:22px;transform:translate(-50%,-50%)}
+a.cite + a.cite{margin-left:2px}
+.cite-pop{position:absolute;z-index:30;background:var(--pop-bg);color:var(--pop-ink);font-family:var(--f-ui);font-size:.8rem;line-height:1.3;padding:.35rem .6rem;border-radius:6px;white-space:nowrap;box-shadow:0 4px 18px rgba(0,0,0,.18);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+.cite-pop a{color:inherit;font-weight:600;text-decoration:none;border-bottom:1px dotted currentColor}
+.cite-pop a:hover{border-bottom-style:solid}
 a.xref{text-decoration:none;border-bottom:1px solid var(--rule)}
 a.xref:hover{border-bottom-color:var(--accent)}
 
@@ -595,6 +603,33 @@ main.addEventListener("click",function(e){
   if(go(h)){ try{ history.replaceState(null,"",h); }catch(err){} }
 });
 window.addEventListener("hashchange",function(){ go(location.hash); });
+
+/* citation popups: hover or tap the small "c" to see the citation; click the citation to open the bibliography */
+(function(){
+  let pop=null, timer=null;
+  function close(){ if(pop){ pop.remove(); pop=null; } }
+  function open(a){
+    close();
+    pop=document.createElement("div"); pop.className="cite-pop"; pop.setAttribute("role","tooltip");
+    const link=document.createElement("a"); link.href=a.getAttribute("href"); link.textContent=a.dataset.cite; link.title="Go to bibliography";
+    pop.appendChild(link); main.appendChild(pop); pop._for=a;
+    const r=a.getBoundingClientRect(), w=pop.offsetWidth, vw=document.documentElement.clientWidth;
+    let x=r.left+r.width/2-w/2; x=Math.max(16,Math.min(x,vw-w-16));
+    pop.style.left=(x+scrollX)+"px"; pop.style.top=(r.bottom+8+scrollY)+"px";
+    pop.addEventListener("mouseenter",function(){ clearTimeout(timer); });
+    pop.addEventListener("mouseleave",function(){ timer=setTimeout(close,200); });
+  }
+  let touch=false;   // ignore the simulated mouse events that follow a tap
+  main.addEventListener("pointerdown",function(e){ touch = e.pointerType!=="mouse"; },true);
+  main.addEventListener("mouseover",function(e){ if(touch) return; const a=e.target.closest("a.cite"); if(a){ clearTimeout(timer); if(!pop||pop._for!==a) open(a); } });
+  main.addEventListener("mouseout",function(e){ if(touch) return; if(e.target.closest("a.cite")) timer=setTimeout(close,250); });
+  main.addEventListener("click",function(e){
+    const a=e.target.closest("a.cite");
+    if(a){ e.preventDefault(); e.stopImmediatePropagation(); if(!(pop&&pop._for===a)) open(a); return; }
+    if(pop){ const inside=pop.contains(e.target); setTimeout(close,0); if(!inside) return; }
+  },true);
+})();
+
 
 if(!go(location.hash)){
   const last = load("tc-tab");

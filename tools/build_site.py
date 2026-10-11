@@ -210,8 +210,10 @@ class Chapter:
             lab = e["_label"]
             text = "[" + lab + (", " + self.text(loc, math_ok=False) if loc else "") + "]"
             title = html.escape(re.sub("<[^>]+>", "", format_entry(e))[:180], quote=True)
-            out.append('<a class="cite" href="#bib-' + lab + '" title="' + title + '">' + text.replace(" ", "&nbsp;") + "</a>")
-        return ", ".join(out)
+            # shown as a small superscript "c"; the full citation appears in a popup (src/page.html)
+            out.append('<a class="cite" href="#bib-' + lab + '" data-cite="' + html.escape(text, quote=True) +
+                       '" aria-label="Citation ' + html.escape(text, quote=True) + '">c</a>')
+        return "".join(out)
 
     def ref(self, label, cref):
         if label not in self.labels:
