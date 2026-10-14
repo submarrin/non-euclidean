@@ -216,6 +216,15 @@ tr:last-child td{border-bottom:0}
 .sb-credit{font-family:var(--f-ui);font-size:.78rem;color:var(--muted);line-height:1.5}
 
 footer{max-width:84rem;margin:0 auto;padding:1.5rem 16px 2.5rem;border-top:1px solid var(--rule);font-family:var(--f-ui);font-size:.78rem;color:var(--muted)}
+
+/* ---------- music player (corner) ---------- */
+.tune{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:40;display:flex;flex-direction:column;align-items:flex-end;gap:.5rem}
+.tune-btn{width:2.6rem;height:2.6rem;border-radius:50%;border:1px solid var(--rule);background:var(--sheet);color:var(--accent);font-size:1.15rem;line-height:1;cursor:pointer;box-shadow:0 3px 14px rgba(0,0,0,.12);display:grid;place-items:center;transition:transform .2s}
+.tune-btn:hover{transform:scale(1.06)}
+.tune-btn[aria-expanded="true"]{background:var(--accent);color:var(--paper);border-color:var(--accent)}
+.tune-panel{width:min(20rem,calc(100vw - 32px));border-radius:12px;overflow:hidden;box-shadow:0 6px 24px rgba(0,0,0,.18);background:var(--sheet)}
+.tune-panel iframe{display:block;width:100%;height:152px;border:0}
+@media (prefers-reduced-motion: reduce){.tune-btn{transition:none}}
 </style>
 
 <header>
@@ -235,6 +244,12 @@ footer{max-width:84rem;margin:0 auto;padding:1.5rem 16px 2.5rem;border-top:1px s
 </header>
 
 <main id="main"></main>
+
+<div class="tune" id="tune">
+  <div class="tune-panel" id="tune-panel" hidden></div>
+  <button class="tune-btn" id="tune-btn" aria-expanded="false" aria-controls="tune-panel" title="Music">♪</button>
+</div>
+
 
 
 <!-- ============ CONTENT (English) ============ -->
@@ -860,6 +875,22 @@ main.addEventListener("click",function(e){
   if(go(h)){ try{ history.replaceState(null,"",h); }catch(err){} }
 });
 window.addEventListener("hashchange",function(){ go(location.hash); });
+
+/* corner music player: the Spotify embed loads only when opened */
+(function(){
+  const btn=document.getElementById("tune-btn"), panel=document.getElementById("tune-panel");
+  btn.addEventListener("click",function(){
+    const open=panel.hidden;
+    if(open && !panel.firstChild){
+      const f=document.createElement("iframe");
+      f.src="https://open.spotify.com/embed/track/6OuppnhPl5ylgm8uPe5vK4?utm_source=generator&theme=0";
+      f.allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"; f.loading="lazy"; f.title="Spotify player";
+      panel.appendChild(f);
+    }
+    panel.hidden=!open; btn.setAttribute("aria-expanded",open?"true":"false");
+  });
+})();
+
 
 /* citation popups: hover or tap the small "c" to see the citation; click the citation to open the bibliography */
 (function(){
