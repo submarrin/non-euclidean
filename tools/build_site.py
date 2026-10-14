@@ -413,7 +413,7 @@ class Chapter:
                 elif env == "authorview":
                     # The author's own conclusions (grey in the PDF): set apart from cited material.
                     inner = "".join("<p>%s</p>" % self.text(p) for p in re.split(r"\n\s*\n", body) if p.strip())
-                    html_out.append('<aside class="authorview">\n  <p class="av-title">[Your conclusion]</p>\n  %s\n</aside>' % inner)
+                    html_out.append('<div class="authorview">\n  %s\n</div>' % inner)
                 elif env in ("enumerate", "itemize"):
                     html_out.append(self.listing(env, body))
                 elif env == "quote":
