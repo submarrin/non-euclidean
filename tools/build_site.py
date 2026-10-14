@@ -7,7 +7,8 @@ Reads the LaTeX chapter(s) listed in CHAPTERS and the matching .bib file
 from the thesis repository and writes index.html from src/page.html.
 
 Only the LaTeX subset used in the thesis is supported (sections, emph/textit/
-textbf, cite, ref/cref, enumerate/itemize, historicalnote, quote, figure with
+textbf, cite, ref/cref, paragraph, enumerate/itemize, historicalnote, authorview,
+quote, figure with
 TikZ, tabular, inline and display math). Anything unknown is reported as a
 warning so that it can be added here instead of silently disappearing.
 
@@ -253,6 +254,9 @@ class Chapter:
                 if name in ("itshape", "small", "centering", "noindent"): i = j; continue
                 if name == "label":
                     _, j = req_arg(s, j); i = j; continue
+                if name == "paragraph":   # run-in heading, as in the PDF: bold title, text continues
+                    arg, j = req_arg(s, j)
+                    out.append('<b class="para-head">%s</b> ' % self.text(arg, math_ok)); i = j; continue
                 warn("unknown command \\" + name + " (kept as text)")
                 out.append(html.escape("\\" + name)); i = j; continue
             if s.startswith("---", i): out.append("—"); i += 3; continue
@@ -406,6 +410,10 @@ class Chapter:
                     inner = "".join("<p>%s</p>" % self.text(p) for p in re.split(r"\n\s*\n", body[j:]) if p.strip())
                     html_out.append('<aside class="hnote" id="hn-%s">\n  <p class="hn-title">Historical Note %d.%d <em>%s</em></p>\n  %s\n</aside>' %
                                     (lab, self.num, hn, self.text(title), inner))
+                elif env == "authorview":
+                    # The author's own conclusions (grey in the PDF): set apart from cited material.
+                    inner = "".join("<p>%s</p>" % self.text(p) for p in re.split(r"\n\s*\n", body) if p.strip())
+                    html_out.append('<aside class="authorview">\n  <p class="av-title">[Your conclusion]</p>\n  %s\n</aside>' % inner)
                 elif env in ("enumerate", "itemize"):
                     html_out.append(self.listing(env, body))
                 elif env == "quote":
