@@ -79,7 +79,7 @@ main{max-width:84rem;margin:0 auto;padding:1.5rem 16px 4rem}
   .chapter.has-toc .book{padding-right:13.5rem;max-width:calc(var(--measure) + 13.5rem)}
 }
 .toc{font-family:var(--f-ui);font-size:.82rem;line-height:1.4}
-.toc-inner{position:sticky;top:calc(env(safe-area-inset-top,0px) + 3.6rem)}
+.toc-inner{position:sticky;top:calc(env(safe-area-inset-top,0px) + 3.6rem);max-height:calc(100vh - 4.6rem);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;padding-right:.3rem}
 .toc h4{font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 .6rem;font-weight:600}
 .toc ol{list-style:none;margin:0;padding:0;display:grid;gap:.15rem}
 .toc a{color:var(--muted);text-decoration:none;display:block;padding:.2rem 0 .2rem .6rem;border-left:2px solid var(--rule)}
@@ -87,7 +87,7 @@ main{max-width:84rem;margin:0 auto;padding:1.5rem 16px 4rem}
 .toc a.lvl3{padding-left:1.4rem;font-size:.78rem}
 .toc a.on{color:var(--accent);border-left-color:var(--accent)}
 @media (max-width:999px){
-  .toc-inner{position:static}
+  .toc-inner{position:static;max-height:none;overflow:visible}
   .toc details{background:var(--sheet);border:1px solid var(--rule);border-radius:6px;padding:.6rem .8rem}
   .toc summary{cursor:pointer;color:var(--ink);font-weight:500}
   .toc ol{margin-top:.6rem}
