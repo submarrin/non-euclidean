@@ -103,7 +103,10 @@ main{max-width:84rem;margin:0 auto;padding:1.5rem 16px 4rem}
 .book p{margin:0 0 1rem;hyphens:auto}
 .book .draftnote{font-size:.95rem;color:var(--muted);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:.8rem 0}
 .book ol.axioms,.book ol.hyp{padding-left:0;list-style:none;display:grid;gap:.6rem;margin:0 0 1.2rem}
-.book ol.axioms li,.book ol.hyp li{display:grid;grid-template-columns:3.2rem minmax(0,1fr);gap:.4rem}
+.book ol.axioms li,.book ol.hyp li{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:.8rem}
+.book ol.axioms,.book ol.hyp{grid-template-columns:max-content minmax(0,1fr)}
+.book ol.axioms li,.book ol.hyp li{grid-column:1/-1;grid-template-columns:subgrid}
+.book ol.axioms .lab,.book ol.hyp .lab{white-space:nowrap}
 .book ol.axioms .lab,.book ol.hyp .lab{font-family:var(--f-ui);font-size:.85rem;font-weight:600;color:var(--accent);padding-top:.15rem}
 .book ul{padding-left:1.2rem;margin:0 0 1.2rem}
 .book ul li{margin-bottom:.45rem}

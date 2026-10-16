@@ -105,7 +105,10 @@ main{max-width:84rem;margin:0 auto;padding:1.5rem 16px 4rem}
 .book p{margin:0 0 1rem;hyphens:auto}
 .book .draftnote{font-size:.95rem;color:var(--muted);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:.8rem 0}
 .book ol.axioms,.book ol.hyp{padding-left:0;list-style:none;display:grid;gap:.6rem;margin:0 0 1.2rem}
-.book ol.axioms li,.book ol.hyp li{display:grid;grid-template-columns:3.2rem minmax(0,1fr);gap:.4rem}
+.book ol.axioms li,.book ol.hyp li{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:.8rem}
+.book ol.axioms,.book ol.hyp{grid-template-columns:max-content minmax(0,1fr)}
+.book ol.axioms li,.book ol.hyp li{grid-column:1/-1;grid-template-columns:subgrid}
+.book ol.axioms .lab,.book ol.hyp .lab{white-space:nowrap}
 .book ol.axioms .lab,.book ol.hyp .lab{font-family:var(--f-ui);font-size:.85rem;font-weight:600;color:var(--accent);padding-top:.15rem}
 .book ul{padding-left:1.2rem;margin:0 0 1.2rem}
 .book ul li{margin-bottom:.45rem}
@@ -329,8 +332,8 @@ footer{max-width:84rem;margin:0 auto;padding:1.5rem 16px 2.5rem;border-top:1px s
 <p>In modern form, the two theorems read as follows <a class="cite" href="#bib-Gre93" data-cite="[Gre93, Thm. 4.4, p. 125; Thm. 4.7, pp. 131–134]" aria-label="Citation [Gre93, Thm. 4.4, p. 125; Thm. 4.7, pp. 131–134]">c</a>:</p>
 
 <ol class="hyp">
-  <li><span class="lab">Theorem~1.</span><span>In neutral geometry the angle sum of every triangle is at most $180^\circ$.</span></li>
-  <li><span class="lab">Theorem~2.</span><span>If one triangle has angle sum exactly $180^\circ$, then a rectangle exists; and if a rectangle exists, then every triangle has angle sum $180^\circ$.</span></li>
+  <li><span class="lab">Theorem&nbsp;1.</span><span>In neutral geometry the angle sum of every triangle is at most $180^\circ$.</span></li>
+  <li><span class="lab">Theorem&nbsp;2.</span><span>If one triangle has angle sum exactly $180^\circ$, then a rectangle exists; and if a rectangle exists, then every triangle has angle sum $180^\circ$.</span></li>
 </ol>
 
 <p>The first is today called the <em>Saccheri–Legendre theorem</em>, a name that appeared only in the twentieth century <a class="cite" href="#bib-Gal20" data-cite="[Gal20, p. 36]" aria-label="Citation [Gal20, p. 36]">c</a>. Both theorems will be proved in <a class="xref" href="#ch3">Chapter 3</a>. Legendre’s proof of the first rests on what Galperin calls the <em>siphon construction</em>, since one triangle “flows” into another as in a siphon <a class="cite" href="#bib-Gal20" data-cite="[Gal20, p. 36]" aria-label="Citation [Gal20, p. 36]">c</a>: given $\triangle ABC$, doubling the median from one vertex produces a new triangle with the same angle sum whose smallest angle is at most half as large. Repeating this, Legendre showed that an angle sum greater than $180^\circ$ would eventually force a single angle of a triangle to exceed $180^\circ$, which is impossible <a class="cite" href="#bib-Gal20" data-cite="[Gal20, pp. 26–29]" aria-label="Citation [Gal20, pp. 26–29]">c</a>. Legendre’s proofs were elegant enough that Lobachevsky later used them in his own work <a class="cite" href="#bib-Gal20" data-cite="[Gal20, p. 36]" aria-label="Citation [Gal20, p. 36]">c</a>.</p>

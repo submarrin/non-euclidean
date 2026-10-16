@@ -437,7 +437,7 @@ class Chapter:
         for n, it in enumerate(items, 1):
             lm = re.match(r"\s*\\label\{([^}]*)\}", it)
             idattr = ' id="%s"' % lm.group(1) if lm else ""
-            rows.append('  <li%s><span class="lab">%s</span><span>%s</span></li>' % (idattr, fmt(n), self.text(it)))
+            rows.append('  <li%s><span class="lab">%s</span><span>%s</span></li>' % (idattr, fmt(n).replace('~', '&nbsp;'), self.text(it)))
         return '<ol class="%s">\n' % cls + "\n".join(rows) + "\n</ol>"
 
     def center(self, body):
