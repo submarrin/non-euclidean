@@ -9,12 +9,22 @@ This repository publishes https://submarrin.github.io/non-euclidean/ (GitHub Pag
   `CHAPTERS` in `tools/build_site.py` (now: ch. 2 ← `ch02_history_iter1.tex` + `references_iter1.bib`).
 - Page design, tabs, figures (SVG), portraits, placeholders: `src/page.html`.
 - Site-only wording that intentionally differs from the thesis: `tools/overrides.json` (keep it short).
-- Build: `python3 tools/build_site.py --thesis <path to thesis repo>`.
+- Local preview build: `python3 tools/build_site.py --thesis <path to thesis repo>` (do not commit the result).
 
-## Rule: every change in the thesis must appear on the site
-- A GitHub Action in the thesis repo (`.github/workflows/update-site.yml`) rebuilds and pushes
-  this site on every push to the thesis `main` branch.
-- If you change the thesis without that Action (or it fails), rebuild and push this repo yourself.
+## Rule: only the pipeline publishes index.html
+- **Never commit `index.html` yourself**, not even after a local build: a local build may use an old
+  copy of the thesis and silently undo newer text (this happened on 2026-10-16).
+  Commit only sources (`src/`, `tools/`, `img/`, …) and push; the pipeline builds and publishes.
+- Both pipelines run `tools/publish.sh`, which always builds from the **current thesis `main`**
+  and, if the push is rejected because someone else published first, refreshes both repos and rebuilds.
+  - Thesis repo, `.github/workflows/update-site.yml`: on every push to the thesis `main`.
+  - This repo, `.github/workflows/build.yml`: on every push to this repo's `main`, daily, and by hand
+    (Actions → Build and check website → Run workflow).
+- Version stamp: every page carries `<meta name="thesis-commit" content="<sha>">` and a footer line
+  "Built from thesis version <sha> (<date>)". The `check-live` job compares the live page with the
+  thesis `main` and fails (GitHub emails the owner) if they differ for 15 minutes.
+- Local builds are previews only. If the thesis has uncommitted changes, the build warns and the
+  stamp says "with uncommitted local changes".
 - Only supervisor-approved files are listed in `CHAPTERS`. Add a chapter there only when the author says it is approved.
 
 ## Figures

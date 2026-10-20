@@ -1,0 +1,85 @@
+# Rebuilds index.html whenever the site itself changes (design, tools, figures),
+# always from the CURRENT thesis main, and checks every day that the live site
+# shows the latest thesis version.
+#
+# Needs the repository secret THESIS_TOKEN: a fine-grained personal access token
+# with "Contents: Read-only" on submarrin/master_thesis_non-euclidean.
+#
+# Pushes made here with the built-in GITHUB_TOKEN do not start this workflow
+# again, so there is no loop.
+name: Build and check website
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "17 6 * * *"   # daily, 06:17 UTC
+  workflow_dispatch:
+
+concurrency:
+  group: build-site
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pages: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the website
+        uses: actions/checkout@v5
+        with:
+          path: site
+
+      - name: Check out the thesis
+        uses: actions/checkout@v5
+        with:
+          repository: submarrin/master_thesis_non-euclidean
+          token: ${{ secrets.THESIS_TOKEN }}
+          path: thesis
+
+      - name: Build from the current thesis and publish if anything changed
+        working-directory: site
+        run: tools/publish.sh ../thesis "${{ github.event_name == 'schedule' && 'daily check found the site out of date' || 'site update' }}"
+
+      - name: Ask GitHub Pages to deploy
+        # Pushes made with GITHUB_TOKEN may not start a Pages build on their own.
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api -X POST "repos/${{ github.repository }}/pages/builds" --silent || echo "Pages build request failed; the live check below will show it."
+
+  check-live:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the thesis
+        uses: actions/checkout@v5
+        with:
+          repository: submarrin/master_thesis_non-euclidean
+          token: ${{ secrets.THESIS_TOKEN }}
+          path: thesis
+
+      - name: Compare the live page with the latest thesis version
+        run: |
+          # GitHub Pages needs a few minutes to deploy; wait up to 15 minutes.
+          for i in $(seq 1 15); do
+            git -C thesis fetch --quiet --depth 1 origin main
+            want=$(git -C thesis rev-parse FETCH_HEAD)
+            live=$(curl -fsSL "https://submarrin.github.io/non-euclidean/?nocache=$(date +%s)" \
+                   | grep -o '<meta name="thesis-commit" content="[^"]*"' | sed 's/.*content="//; s/"$//' || true)
+            if [ "$live" = "$want" ]; then
+              echo "The live site shows the latest thesis version (${want::7})."
+              exit 0
+            fi
+            echo "Live site: ${live:-no version stamp}; latest thesis: ${want::7}. Waiting..."
+            sleep 60
+          done
+          {
+            echo "### The website is out of date"
+            echo
+            echo "Live page: \`${live:-no version stamp}\`, latest thesis: \`${want::7}\`."
+            echo "Run this workflow again (Actions → Build and check website → Run workflow)."
+          } >> "$GITHUB_STEP_SUMMARY"
+          exit 1
