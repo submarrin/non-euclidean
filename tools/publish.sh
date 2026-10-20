@@ -9,6 +9,11 @@
 # can never overwrite a newer one.
 set -euo pipefail
 thesis=$1; message=$2
+git fetch --quiet origin main
+if [ -n "$(git log --oneline FETCH_HEAD..HEAD)" ]; then
+  echo "This site checkout has commits that are not on GitHub yet; push them first (the pipeline publishes)." >&2
+  exit 1
+fi
 for attempt in 1 2 3 4 5; do
   git -C "$thesis" fetch --quiet --depth 1 origin main
   git -C "$thesis" checkout --quiet --detach FETCH_HEAD
