@@ -7,7 +7,7 @@ Reads the LaTeX chapter(s) listed in CHAPTERS and the matching .bib file
 from the thesis repository and writes index.html from src/page.html.
 
 Only the LaTeX subset used in the thesis is supported (sections, emph/textit/
-textbf, cite, ref/cref, paragraph, enumerate/itemize, historicalnote, authorview,
+textbf, cite, ref/cref, paragraph, footnote, enumerate/itemize, historicalnote, authorview,
 quote, figure with
 TikZ, tabular, inline and display math). Anything unknown is reported as a
 warning so that it can be added here instead of silently disappearing.
@@ -118,6 +118,10 @@ def names(field):
     for n in re.split(r"\s+and\s+", field or ""):
         n = n.strip()
         if not n: continue
+        if n == "others":                       # "and others": shown as "et al.", "+" in labels
+            out.append(("others", "")); continue
+        if n.startswith("{") and n.endswith("}"):   # corporate author, e.g. {Planck Collaboration}
+            out.append((bib_text(n), "")); continue
         if "," in n:
             last, first = [x.strip() for x in n.split(",", 1)]
         else:
@@ -128,6 +132,8 @@ def names(field):
 def label_for(e):
     ns = names(e.get("author")) or names(e.get("editor"))
     yy = (e.get("year") or "")[-2:]
+    if ns and ns[-1][0] == "others":            # as biblatex: initials of the listed names, then "+"
+        return "".join(n[0][0] for n in ns[:-1][:3]) + "+" + yy
     if len(ns) == 1:
         lab = ns[0][0][:3]
     elif len(ns) <= 4:
@@ -137,14 +143,16 @@ def label_for(e):
     return lab + yy
 
 def fmt_names(ns):
-    full = [(f + " " + l).strip() for l, f in ns]
+    others = bool(ns) and ns[-1][0] == "others"
+    full = [(f + " " + l).strip() for l, f in (ns[:-1] if others else ns)]
+    if others: return ", ".join(full) + ", et al."
     if len(full) <= 2: return " and ".join(full)
     return ", ".join(full[:-1]) + ", and " + full[-1]
 
 def format_entry(e):
     t = e["type"]; parts = []
     if e.get("author"):
-        parts.append(fmt_names(names(e["author"])) + ".")
+        a = fmt_names(names(e["author"])); parts.append(a if a.endswith(".") else a + ".")
     elif e.get("editor"):
         ns = names(e["editor"]); parts.append(fmt_names(ns) + (", eds." if len(ns) > 1 else ", ed."))
     title = bib_text(e.get("title", ""))
@@ -198,6 +206,7 @@ class Chapter:
         self.labels = {}          # label -> (text, anchor)
         self.cited = []
         self.figs = {}            # label -> tikz code
+        self.notes = {}           # footnote LaTeX -> (number, html)
         self.sec = 0; self.sub = 0; self.fig = 0; self.hn = 0
 
     # ---- inline -------------------------------------------------------
@@ -254,6 +263,14 @@ class Chapter:
                 if name in ("itshape", "small", "centering", "noindent"): i = j; continue
                 if name == "label":
                     _, j = req_arg(s, j); i = j; continue
+                if name == "footnote":    # numbered marker here; the text is listed under "Notes" (see footnotes())
+                    arg, j = req_arg(s, j)
+                    if arg not in self.notes:
+                        self.notes[arg] = (len(self.notes) + 1, None)
+                        self.notes[arg] = (self.notes[arg][0], self.text(arg, math_ok))
+                    n = self.notes[arg][0]
+                    out.append('<sup class="fn" id="fnref-%d-%d"><a href="#fn-%d-%d" aria-label="Note %d">%d</a></sup>'
+                               % (self.num, n, self.num, n, n, n)); i = j; continue
                 if name == "paragraph":   # run-in heading, as in the PDF: bold title, text continues
                     arg, j = req_arg(s, j)
                     out.append('<b class="para-head">%s</b> ' % self.text(arg, math_ok)); i = j; continue
@@ -477,6 +494,12 @@ class Chapter:
         return ('<figure id="fig-%d-%d">\n  %s\n  <figcaption><b>Figure %d.%d</b> %s</figcaption>\n</figure>'
                 % (self.num, n, inner, self.num, n, self.text(caption)))
 
+    def footnotes(self):
+        if not self.notes: return ""
+        rows = ['    <li id="fn-%d-%d">%s <a class="fn-back" href="#fnref-%d-%d" aria-label="Back to the text">↩</a></li>'
+                % (self.num, n, h, self.num, n) for n, h in sorted(self.notes.values())]
+        return '<section class="notes" aria-label="Notes">\n  <h3>Notes</h3>\n  <ol>\n%s\n  </ol>\n</section>\n\n' % "\n".join(rows)
+
     def bibliography(self, heading):
         es = sorted((self.bib[k] for k in self.cited), key=sort_key)
         rows = []
@@ -529,7 +552,7 @@ def main():
                     bib[k]["_label"] = l + "abcdefgh"[cnt.get(l, 0)]; cnt[l] = cnt.get(l, 0) + 1
         ch = Chapter(cfg["number"], bib)
         ov = overrides.get(tab, {})
-        body = ch.render(tex, ov) + "\n\n" + ch.bibliography(ov.get("bibliography_heading", "Bibliography"))
+        body = ch.render(tex, ov) + "\n\n" + ch.footnotes() + ch.bibliography(ov.get("bibliography_heading", "Bibliography"))
         stale = {}
         for label, code in ch.figs.items():
             h = tikz_hash(code)
