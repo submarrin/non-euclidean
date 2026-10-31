@@ -38,3 +38,5 @@ fallback the page shows a short "being drawn" note. Prefer extending the convert
 - Use only material from the thesis files. Citations exactly as in the thesis (biblatex alphabetic labels).
 - No historical facts that are not in the thesis; put ideas without a source in `TODO.md` under "To verify".
 - Portraits: public domain, with a credit line (Bolyai: CC BY-SA 3.0, kept with attribution).
+- Images that are on the website but not in the thesis PDF go in the right-hand portrait column, at portrait size
+  (`PORTRAITS`, or `SITE_FIGS` for drawings beside a paragraph), never as full-width figures in the text.

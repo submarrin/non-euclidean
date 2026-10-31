@@ -177,6 +177,8 @@ sup.fn a{color:var(--accent);text-decoration:none}
 .portrait .yrs{font-variant-numeric:tabular-nums}
 .portrait .credit{display:block;margin-top:.25rem;font-size:.66rem}
 .portrait .credit a{color:var(--muted)}
+.site-fig svg{display:block;width:100%;height:auto;background:var(--sheet);border:1px solid var(--rule);border-radius:3px}
+.site-fig .sub-arrow{display:block;text-align:center;font-family:var(--f-body);font-size:.95rem;color:var(--ink);margin:.3rem 0}
 @media (min-width:1240px){
   .portrait{width:11.5rem;margin:.3rem -13.5rem 1rem 0}
 }
@@ -490,6 +492,27 @@ function dot(F,x,y,r,hollow){ return '<circle cx="'+F.X(x).toFixed(1)+'" cy="'+F
 function lbl(F,x,y,t,o){ o=o||{}; return '<text x="'+(F.X(x)+(o.dx||0)).toFixed(1)+'" y="'+(F.Y(y)+(o.dy||0)).toFixed(1)+'" font-size="'+(o.size||24)+'" font-style="'+(o.it===false?'normal':'italic')+'" text-anchor="'+(o.anchor||'middle')+'" fill="var(--fig-1)">'+t+'</text>'; }
 function seg(F,a,b,o){ o=o||{}; return '<path d="M'+F.P(a[0],a[1])+' L'+F.P(b[0],b[1])+'" stroke="'+(o.col||'var(--fig-1)')+'" stroke-width="'+(o.w||2.6)+'"'+(o.dash?' stroke-dasharray="'+o.dash+'"':'')+' fill="none" stroke-linecap="round"/>'; }
 
+/* Sphere x²+y²+z²=r², same view and scale as figHyperboloid, for the "r → qi" pair. */
+function figSphere(){
+  const U=95, r=1.3, A=30*Math.PI/180, E=18*Math.PI/180;
+  const cA=Math.cos(A), sA=Math.sin(A), cE=Math.cos(E), sE=Math.sin(E);
+  const F=frame(-2.35,2.35,-1.5,2.3,U);
+  const pr=(x,y,w)=>{ const yy=x*sA+y*cA; return [x*cA-y*sA, w*cE+yy*sE]; };
+  const pt=(x,y,w)=>{ const p=pr(x,y,w); return F.P(p[0],p[1]); };
+  const t0=Math.atan2(-cA,-sA);
+  const ell=(t1,t2)=>{ let a=[]; for(let i=0;i<=48;i++){const t=t1+(t2-t1)*i/48; a.push(pt(r*Math.cos(t),r*Math.sin(t),0));} return a; };
+  const line=(pts,o)=>'<path d="M'+pts.join(" L")+'" fill="none" stroke="'+(o.col||'var(--fig-2)')+'" stroke-width="'+(o.w||4.4)+'"'+(o.dash?' stroke-dasharray="'+o.dash+'"':'')+' stroke-linecap="round" stroke-linejoin="round"/>';
+  const ax=(a,b,t,o)=>{ s+=line([pt(a[0],a[1],a[2]),pt(b[0],b[1],b[2])],{col:'var(--fig-1)',w:2.8}); if(t){ const q=pr(b[0],b[1],b[2]); s+=lbl(F,q[0],q[1],t,o); } };
+  let s='<svg viewBox="0 0 '+F.W.toFixed(0)+' '+F.H.toFixed(0)+'" role="img" aria-label="A sphere of radius r">';
+  s+='<circle cx="'+F.X(0).toFixed(1)+'" cy="'+F.Y(0).toFixed(1)+'" r="'+(r*U).toFixed(1)+'" fill="var(--fig-fill)" stroke="var(--fig-2)" stroke-width="4.4"/>';
+  s+=line(ell(t0+Math.PI/2,t0+3*Math.PI/2),{w:2.4,dash:'8 9'});      // back of the equator
+  s+=line(ell(t0-Math.PI/2,t0+Math.PI/2),{w:2.8});                   // front of the equator
+  ax([r,0,0],[2.1,0,0],'x',{dx:-6,dy:42,size:40}); ax([0,r,0],[0,2.0,0],'y',{dx:-22,dy:-6,size:40});
+  ax([0,0,r],[0,0,2.15],'z',{dx:26,dy:14,size:40});
+  [1,-1].forEach(function(sg){ s+=dot(F,0,sg*r*cE,7); s+=lbl(F,0,sg*r*cE,sg>0?'r':'−r',{dx:22,dy:sg>0?40:-12,size:40,anchor:'start'}); });
+  return s+'</svg>';
+}
+
 /* Two-sheeted hyperboloid x²+y²−w²=−1 (q = 1, z = iw), orthographic view from slightly above. */
 function figHyperboloid(){
   const U=95, R=1.45, Wr=Math.sqrt(1+R*R), A=30*Math.PI/180, E=18*Math.PI/180;
@@ -505,42 +528,43 @@ function figHyperboloid(){
   const outline=(s)=>{ let a=[]; for(let i=0;i<=80;i++){const x=-R+2*R*i/80;
       let r=Math.sqrt((sE*sE+cE*cE*x*x)/(cE*cE-sE*sE)); r=Math.min(Math.max(r,Math.abs(x)),R);
       a.push(F.P(x, s*(cE*Math.sqrt(1+r*r)-sE*Math.sqrt(Math.max(r*r-x*x,0)))));} return a; };
-  const line=(pts,o)=>'<path d="M'+pts.join(" L")+'" fill="none" stroke="'+(o.col||'var(--fig-2)')+'" stroke-width="'+(o.w||2.4)+'"'+(o.dash?' stroke-dasharray="'+o.dash+'"':'')+' stroke-linecap="round" stroke-linejoin="round"/>';
+  const line=(pts,o)=>'<path d="M'+pts.join(" L")+'" fill="none" stroke="'+(o.col||'var(--fig-2)')+'" stroke-width="'+(o.w||4.4)+'"'+(o.dash?' stroke-dasharray="'+o.dash+'"':'')+' stroke-linecap="round" stroke-linejoin="round"/>';
   let s='<svg viewBox="0 0 '+F.W.toFixed(0)+' '+F.H.toFixed(0)+'" role="img" aria-label="The sphere of radius qi in pseudo-Euclidean space: a hyperboloid of two sheets">';
   // asymptotic cone and axes
-  [[1,1],[1,-1],[-1,1],[-1,-1]].forEach(function(d){ s+=line([F.P(0,0),F.P(d[0]*1.75,d[1]*1.75*cE)],{col:'var(--fig-3)',w:1.4,dash:'5 6'}); });
-  const ax=(x,y,w,t,o)=>{ s+=line([pt(0,0,0),pt(x,y,w)],{col:'var(--fig-1)',w:1.6}); const p=pr(x,y,w); s+=lbl(F,p[0],p[1],t,o); };
-  ax(2.1,0,0,'x',{dx:12,dy:8}); ax(0,2.0,0,'y',{dx:10,dy:-4}); ax(0,0,-1,'',{});
+  [[1,1],[1,-1],[-1,1],[-1,-1]].forEach(function(d){ s+=line([F.P(0,0),F.P(d[0]*1.75,d[1]*1.75*cE)],{col:'var(--fig-3)',w:2.4,dash:'9 10'}); });
+  const ax=(x,y,w,t,o)=>{ s+=line([pt(0,0,0),pt(x,y,w)],{col:'var(--fig-1)',w:2.8}); const p=pr(x,y,w); s+=lbl(F,p[0],p[1],t,o); };
+  ax(2.1,0,0,'x',{dx:-6,dy:42,size:40}); ax(0,2.0,0,'y',{dx:-22,dy:-6,size:40}); ax(0,0,-1,'',{});
   [1,-1].forEach(function(sg){
     const lower=sg<0, out=outline(sg);
     // upper sheet: the inside of the bowl is seen through the rim; lower sheet: the back of the rim is hidden
     s+='<path d="M'+out.join(" L")+' L'+(lower?front:back)(sg*Wr,R).join(" L")+' Z" fill="var(--fig-fill)" stroke="none"/>';
     if(!lower) s+='<path d="M'+ell(Wr,R,0,2*Math.PI).join(" L")+' Z" fill="var(--fig-fill)" stroke="none"/>';
     const w1=sg*Math.SQRT2;                  // one parallel, r = 1
-    s+=line(back(w1,1),{w:1.3,dash:'4 5'}); s+=line(front(w1,1),{w:1.5});
-    s+=line(back(sg*Wr,R),lower?{w:1.3,dash:'4 5'}:{});
+    s+=line(back(w1,1),{w:2.4,dash:'8 9'}); s+=line(front(w1,1),{w:2.8});
+    s+=line(back(sg*Wr,R),lower?{w:2.4,dash:'8 9'}:{});
     s+=line(front(sg*Wr,R),{});
     s+=line(out,{});
-    s+=dot(F,0,sg*cE,4);
-    s+=lbl(F,0,sg*cE,lower?'−qi':'qi',{dx:18,dy:lower?-9:24,size:22,anchor:'start'});
+    s+=dot(F,0,sg*cE,7);
+    s+=lbl(F,0,sg*cE,lower?'−qi':'qi',{dx:22,dy:lower?-12:40,size:40,anchor:'start'});
   });
-  ax(0,0,2.45,'z',{dx:16,dy:6});
+  ax(0,0,2.45,'z',{dx:26,dy:14,size:40});
   return s+'</svg>';
 }
 
-/* Website-only illustrations (not in the thesis PDF), placed after the paragraph whose text starts with `after`. */
+/* Website-only illustrations (not in the thesis PDF), shown in the portrait column beside the paragraph whose text starts with `after`. */
 const SITE_FIGS = [
-  {after:"Consistency.", draw:figHyperboloid,
-   caption:"The sphere of radius <i>qi</i> in pseudo-Euclidean space ($x, y$ real, $z$ purely imaginary) has the form of a two-sheeted hyperboloid; the Lobachevsky plane is realised on each of its sheets. Illustration for the website; not in the thesis PDF."}
+  {after:"Consistency.", who:"Radius <i>r</i> → radius <i>qi</i>",
+   draw:function(){ return figSphere()+'<span class="sub-arrow"><i>r</i> → <i>qi</i></span>'+figHyperboloid(); },
+   caption:"Above, a sphere of radius <i>r</i>. Below, the sphere of radius <i>qi</i> in pseudo-Euclidean space: a two-sheeted hyperboloid, on each sheet of which the Lobachevsky plane is realised"}
 ];
 function addSiteFigs(root){
   SITE_FIGS.forEach(function(sf){
     const p = Array.prototype.find.call(root.querySelectorAll(".book > p"), function(el){ return el.textContent.trim().indexOf(sf.after)===0; });
     if(!p) return;
     const f = document.createElement("figure");
-    f.className="site-fig";
-    f.innerHTML='<div class="fig-wrap">'+sf.draw()+'</div><figcaption>'+sf.caption+'</figcaption>';
-    p.insertAdjacentElement("afterend", f);
+    f.className="portrait site-fig";      // same place and size as the portraits: right column
+    f.innerHTML=sf.draw()+'<figcaption><span class="who">'+sf.who+'</span><span class="credit">'+sf.caption+'. Drawing for this website, not in the thesis PDF</span></figcaption>';
+    p.insertAdjacentElement("beforebegin", f);
   });
 }
 
