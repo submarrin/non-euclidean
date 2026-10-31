@@ -177,6 +177,7 @@ sup.fn a{color:var(--accent);text-decoration:none}
 .portrait .yrs{font-variant-numeric:tabular-nums}
 .portrait .credit{display:block;margin-top:.25rem;font-size:.66rem}
 .portrait .credit a{color:var(--muted)}
+.site-fig svg{display:block;width:100%;height:auto;background:var(--sheet);border:1px solid var(--rule);border-radius:3px}
 @media (min-width:1240px){
   .portrait{width:11.5rem;margin:.3rem -13.5rem 1rem 0}
 }
@@ -505,42 +506,42 @@ function figHyperboloid(){
   const outline=(s)=>{ let a=[]; for(let i=0;i<=80;i++){const x=-R+2*R*i/80;
       let r=Math.sqrt((sE*sE+cE*cE*x*x)/(cE*cE-sE*sE)); r=Math.min(Math.max(r,Math.abs(x)),R);
       a.push(F.P(x, s*(cE*Math.sqrt(1+r*r)-sE*Math.sqrt(Math.max(r*r-x*x,0)))));} return a; };
-  const line=(pts,o)=>'<path d="M'+pts.join(" L")+'" fill="none" stroke="'+(o.col||'var(--fig-2)')+'" stroke-width="'+(o.w||2.4)+'"'+(o.dash?' stroke-dasharray="'+o.dash+'"':'')+' stroke-linecap="round" stroke-linejoin="round"/>';
+  const line=(pts,o)=>'<path d="M'+pts.join(" L")+'" fill="none" stroke="'+(o.col||'var(--fig-2)')+'" stroke-width="'+(o.w||4.4)+'"'+(o.dash?' stroke-dasharray="'+o.dash+'"':'')+' stroke-linecap="round" stroke-linejoin="round"/>';
   let s='<svg viewBox="0 0 '+F.W.toFixed(0)+' '+F.H.toFixed(0)+'" role="img" aria-label="The sphere of radius qi in pseudo-Euclidean space: a hyperboloid of two sheets">';
   // asymptotic cone and axes
-  [[1,1],[1,-1],[-1,1],[-1,-1]].forEach(function(d){ s+=line([F.P(0,0),F.P(d[0]*1.75,d[1]*1.75*cE)],{col:'var(--fig-3)',w:1.4,dash:'5 6'}); });
-  const ax=(x,y,w,t,o)=>{ s+=line([pt(0,0,0),pt(x,y,w)],{col:'var(--fig-1)',w:1.6}); const p=pr(x,y,w); s+=lbl(F,p[0],p[1],t,o); };
-  ax(2.1,0,0,'x',{dx:12,dy:8}); ax(0,2.0,0,'y',{dx:10,dy:-4}); ax(0,0,-1,'',{});
+  [[1,1],[1,-1],[-1,1],[-1,-1]].forEach(function(d){ s+=line([F.P(0,0),F.P(d[0]*1.75,d[1]*1.75*cE)],{col:'var(--fig-3)',w:2.4,dash:'9 10'}); });
+  const ax=(x,y,w,t,o)=>{ s+=line([pt(0,0,0),pt(x,y,w)],{col:'var(--fig-1)',w:2.8}); const p=pr(x,y,w); s+=lbl(F,p[0],p[1],t,o); };
+  ax(2.1,0,0,'x',{dx:-6,dy:42,size:40}); ax(0,2.0,0,'y',{dx:-22,dy:-6,size:40}); ax(0,0,-1,'',{});
   [1,-1].forEach(function(sg){
     const lower=sg<0, out=outline(sg);
     // upper sheet: the inside of the bowl is seen through the rim; lower sheet: the back of the rim is hidden
     s+='<path d="M'+out.join(" L")+' L'+(lower?front:back)(sg*Wr,R).join(" L")+' Z" fill="var(--fig-fill)" stroke="none"/>';
     if(!lower) s+='<path d="M'+ell(Wr,R,0,2*Math.PI).join(" L")+' Z" fill="var(--fig-fill)" stroke="none"/>';
     const w1=sg*Math.SQRT2;                  // one parallel, r = 1
-    s+=line(back(w1,1),{w:1.3,dash:'4 5'}); s+=line(front(w1,1),{w:1.5});
-    s+=line(back(sg*Wr,R),lower?{w:1.3,dash:'4 5'}:{});
+    s+=line(back(w1,1),{w:2.4,dash:'8 9'}); s+=line(front(w1,1),{w:2.8});
+    s+=line(back(sg*Wr,R),lower?{w:2.4,dash:'8 9'}:{});
     s+=line(front(sg*Wr,R),{});
     s+=line(out,{});
-    s+=dot(F,0,sg*cE,4);
-    s+=lbl(F,0,sg*cE,lower?'−qi':'qi',{dx:18,dy:lower?-9:24,size:22,anchor:'start'});
+    s+=dot(F,0,sg*cE,7);
+    s+=lbl(F,0,sg*cE,lower?'−qi':'qi',{dx:22,dy:lower?-12:40,size:40,anchor:'start'});
   });
-  ax(0,0,2.45,'z',{dx:16,dy:6});
+  ax(0,0,2.45,'z',{dx:26,dy:14,size:40});
   return s+'</svg>';
 }
 
-/* Website-only illustrations (not in the thesis PDF), placed after the paragraph whose text starts with `after`. */
+/* Website-only illustrations (not in the thesis PDF), shown in the portrait column beside the paragraph whose text starts with `after`. */
 const SITE_FIGS = [
-  {after:"Consistency.", draw:figHyperboloid,
-   caption:"The sphere of radius <i>qi</i> in pseudo-Euclidean space ($x, y$ real, $z$ purely imaginary) has the form of a two-sheeted hyperboloid; the Lobachevsky plane is realised on each of its sheets. Illustration for the website; not in the thesis PDF."}
+  {after:"Consistency.", draw:figHyperboloid, who:"Sphere of radius <i>qi</i>",
+   caption:"In pseudo-Euclidean space it is a two-sheeted hyperboloid; the Lobachevsky plane is realised on each sheet"}
 ];
 function addSiteFigs(root){
   SITE_FIGS.forEach(function(sf){
     const p = Array.prototype.find.call(root.querySelectorAll(".book > p"), function(el){ return el.textContent.trim().indexOf(sf.after)===0; });
     if(!p) return;
     const f = document.createElement("figure");
-    f.className="site-fig";
-    f.innerHTML='<div class="fig-wrap">'+sf.draw()+'</div><figcaption>'+sf.caption+'</figcaption>';
-    p.insertAdjacentElement("afterend", f);
+    f.className="portrait site-fig";      // same place and size as the portraits: right column
+    f.innerHTML=sf.draw()+'<figcaption><span class="who">'+sf.who+'</span><span class="credit">'+sf.caption+'. Drawing for this website, not in the thesis PDF</span></figcaption>';
+    p.insertAdjacentElement("beforebegin", f);
   });
 }
 
