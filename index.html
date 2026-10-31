@@ -793,6 +793,60 @@ function dot(F,x,y,r,hollow){ return '<circle cx="'+F.X(x).toFixed(1)+'" cy="'+F
 function lbl(F,x,y,t,o){ o=o||{}; return '<text x="'+(F.X(x)+(o.dx||0)).toFixed(1)+'" y="'+(F.Y(y)+(o.dy||0)).toFixed(1)+'" font-size="'+(o.size||24)+'" font-style="'+(o.it===false?'normal':'italic')+'" text-anchor="'+(o.anchor||'middle')+'" fill="var(--fig-1)">'+t+'</text>'; }
 function seg(F,a,b,o){ o=o||{}; return '<path d="M'+F.P(a[0],a[1])+' L'+F.P(b[0],b[1])+'" stroke="'+(o.col||'var(--fig-1)')+'" stroke-width="'+(o.w||2.6)+'"'+(o.dash?' stroke-dasharray="'+o.dash+'"':'')+' fill="none" stroke-linecap="round"/>'; }
 
+/* Two-sheeted hyperboloid x²+y²−w²=−1 (q = 1, z = iw), orthographic view from slightly above. */
+function figHyperboloid(){
+  const U=95, R=1.45, Wr=Math.sqrt(1+R*R), A=30*Math.PI/180, E=18*Math.PI/180;
+  const cA=Math.cos(A), sA=Math.sin(A), cE=Math.cos(E), sE=Math.sin(E);
+  const F=frame(-2.35,2.35,-2.45,2.55,U);
+  const pr=(x,y,w)=>{ const yy=x*sA+y*cA; return [x*cA-y*sA, w*cE+yy*sE]; };
+  const pt=(x,y,w)=>{ const p=pr(x,y,w); return F.P(p[0],p[1]); };
+  const ell=(w,r,t0,t1)=>{ let a=[]; for(let i=0;i<=48;i++){const t=t0+(t1-t0)*i/48; a.push(pt(r*Math.cos(t),r*Math.sin(t),w));} return a; };
+  // front half of a horizontal circle: the points with the smaller depth (screen y offset < 0)
+  const t0=Math.atan2(-cA,-sA);              // where the depth term x·sinA + y·cosA is minimal
+  const front=(w,r)=>ell(w,r,t0-Math.PI/2,t0+Math.PI/2), back=(w,r)=>ell(w,r,t0+Math.PI/2,t0+3*Math.PI/2);
+  // visible outline of a sheet: envelope of its horizontal circles, then the front of the rim
+  const outline=(s)=>{ let a=[]; for(let i=0;i<=80;i++){const x=-R+2*R*i/80;
+      let r=Math.sqrt((sE*sE+cE*cE*x*x)/(cE*cE-sE*sE)); r=Math.min(Math.max(r,Math.abs(x)),R);
+      a.push(F.P(x, s*(cE*Math.sqrt(1+r*r)-sE*Math.sqrt(Math.max(r*r-x*x,0)))));} return a; };
+  const line=(pts,o)=>'<path d="M'+pts.join(" L")+'" fill="none" stroke="'+(o.col||'var(--fig-2)')+'" stroke-width="'+(o.w||2.4)+'"'+(o.dash?' stroke-dasharray="'+o.dash+'"':'')+' stroke-linecap="round" stroke-linejoin="round"/>';
+  let s='<svg viewBox="0 0 '+F.W.toFixed(0)+' '+F.H.toFixed(0)+'" role="img" aria-label="The sphere of radius qi in pseudo-Euclidean space: a hyperboloid of two sheets">';
+  // asymptotic cone and axes
+  [[1,1],[1,-1],[-1,1],[-1,-1]].forEach(function(d){ s+=line([F.P(0,0),F.P(d[0]*1.75,d[1]*1.75*cE)],{col:'var(--fig-3)',w:1.4,dash:'5 6'}); });
+  const ax=(x,y,w,t,o)=>{ s+=line([pt(0,0,0),pt(x,y,w)],{col:'var(--fig-1)',w:1.6}); const p=pr(x,y,w); s+=lbl(F,p[0],p[1],t,o); };
+  ax(2.1,0,0,'x',{dx:12,dy:8}); ax(0,2.0,0,'y',{dx:10,dy:-4}); ax(0,0,-1,'',{});
+  [1,-1].forEach(function(sg){
+    const lower=sg<0, out=outline(sg);
+    // upper sheet: the inside of the bowl is seen through the rim; lower sheet: the back of the rim is hidden
+    s+='<path d="M'+out.join(" L")+' L'+(lower?front:back)(sg*Wr,R).join(" L")+' Z" fill="var(--fig-fill)" stroke="none"/>';
+    if(!lower) s+='<path d="M'+ell(Wr,R,0,2*Math.PI).join(" L")+' Z" fill="var(--fig-fill)" stroke="none"/>';
+    const w1=sg*Math.SQRT2;                  // one parallel, r = 1
+    s+=line(back(w1,1),{w:1.3,dash:'4 5'}); s+=line(front(w1,1),{w:1.5});
+    s+=line(back(sg*Wr,R),lower?{w:1.3,dash:'4 5'}:{});
+    s+=line(front(sg*Wr,R),{});
+    s+=line(out,{});
+    s+=dot(F,0,sg*cE,4);
+    s+=lbl(F,0,sg*cE,lower?'−qi':'qi',{dx:18,dy:lower?-9:24,size:22,anchor:'start'});
+  });
+  ax(0,0,2.45,'z',{dx:16,dy:6});
+  return s+'</svg>';
+}
+
+/* Website-only illustrations (not in the thesis PDF), placed after the paragraph whose text starts with `after`. */
+const SITE_FIGS = [
+  {after:"Consistency.", draw:figHyperboloid,
+   caption:"The sphere of radius <i>qi</i> in pseudo-Euclidean space ($x, y$ real, $z$ purely imaginary) has the form of a two-sheeted hyperboloid; the Lobachevsky plane is realised on each of its sheets. Illustration for the website; not in the thesis PDF."}
+];
+function addSiteFigs(root){
+  SITE_FIGS.forEach(function(sf){
+    const p = Array.prototype.find.call(root.querySelectorAll(".book > p"), function(el){ return el.textContent.trim().indexOf(sf.after)===0; });
+    if(!p) return;
+    const f = document.createElement("figure");
+    f.className="site-fig";
+    f.innerHTML='<div class="fig-wrap">'+sf.draw()+'</div><figcaption>'+sf.caption+'</figcaption>';
+    p.insertAdjacentElement("afterend", f);
+  });
+}
+
 /* Fallback drawings. Figures are normally converted from the thesis TikZ at build time
    (tools/tikz2svg.py); these are used only if that conversion fails for a label. */
 const FIGS = {
@@ -839,6 +893,7 @@ CHAPTERS.forEach(function(ch){
 });
 
 addPortraits(panels.ch2);
+addSiteFigs(panels.ch2);
 if(window.Sandbox && panels.sandbox){ try{ window.Sandbox.mount(panels.sandbox); }catch(e){ console.error(e); } }
 document.querySelectorAll("[data-fig]").forEach(function(el){
   const f = FIGS[el.getAttribute("data-fig")];
