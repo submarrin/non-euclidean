@@ -26,7 +26,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Which thesis files feed which site tab. Only supervisor-approved files go here.
 CHAPTERS = {
-    "ch2": {"tex": "ch02_history_iter0.tex", "bib": "references_iter1.bib", "number": 2},
+    "ch2": {"tex": "ch02_history_iter0.tex", "bib": "references_iter1.bib", "main": "main_ch02_iter0.tex", "number": 2},
 }
 
 WARN = []
@@ -260,7 +260,7 @@ class Chapter:
                 if name == ",": out.append("\u2009"); i = j; continue
                 if name in (" ", "\n"): out.append(" "); i = j; continue
                 if name in ("&", "%", "$", "#", "_"): out.append(html.escape(name)); i = j; continue
-                if name in ("itshape", "small", "centering", "noindent"): i = j; continue
+                if name in ("itshape", "small", "centering", "noindent", "clearpage", "newpage"): i = j; continue
                 if name == "label":
                     _, j = req_arg(s, j); i = j; continue
                 if name == "footnote":    # numbered marker here; the text is listed under "Notes" (see footnotes())
@@ -552,7 +552,12 @@ def main():
                     bib[k]["_label"] = l + "abcdefgh"[cnt.get(l, 0)]; cnt[l] = cnt.get(l, 0) + 1
         ch = Chapter(cfg["number"], bib)
         ov = overrides.get(tab, {})
-        body = ch.render(tex, ov) + "\n\n" + ch.footnotes() + ch.bibliography(ov.get("bibliography_heading", "Bibliography"))
+        bib_heading = "Bibliography"
+        if cfg.get("main"):       # the heading of the PDF's \printbibliography, so site and PDF agree
+            m = re.search(r"\\printbibliography\[[^\]]*title=\{([^{}]*)\}", strip_comments(open(os.path.join(a.thesis, cfg["main"]), encoding="utf-8").read()))
+            if m: bib_heading = m.group(1)
+            else: warn("no \\printbibliography title in " + cfg["main"])
+        body = ch.render(tex, ov) + "\n\n" + ch.footnotes() + ch.bibliography(ov.get("bibliography_heading", bib_heading))
         stale = {}
         for label, code in ch.figs.items():
             h = tikz_hash(code)
