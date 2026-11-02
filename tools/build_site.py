@@ -26,7 +26,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Which thesis files feed which site tab. Only supervisor-approved files go here.
 CHAPTERS = {
-    "ch2": {"tex": "ch02_history_iter1.tex", "bib": "references_iter1.bib", "number": 2},
+    "ch2": {"tex": "ch02_history_iter0.tex", "bib": "references_iter1.bib", "number": 2},
 }
 
 WARN = []
