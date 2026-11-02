@@ -6,7 +6,7 @@ This repository publishes https://submarrin.github.io/non-euclidean/ (GitHub Pag
 - `index.html` is **generated**. Do not edit it by hand.
 - Source of truth for chapter text and bibliography: the private thesis repo
   `submarrin/master_thesis_non-euclidean`. Which thesis files feed which tab is set in
-  `CHAPTERS` in `tools/build_site.py` (now: ch. 2 ← `ch02_history_iter1.tex` + `references_iter1.bib`).
+  `CHAPTERS` in `tools/build_site.py` (now: ch. 2 ← `ch02_history_iter0.tex` + `references_iter1.bib`; `ch02_history_iter0.tex` is the part of `ch02_history_iter1.tex` sent to the supervisor so far: full text to 2.3.3, headings only after that).
 - Page design, tabs, figures (SVG), portraits, placeholders: `src/page.html`.
 - Site-only wording that intentionally differs from the thesis: `tools/overrides.json` (keep it short).
 - Local preview build: `python3 tools/build_site.py --thesis <path to thesis repo>` (do not commit the result).
