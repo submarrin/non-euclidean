@@ -260,7 +260,7 @@ class Chapter:
                 if name == ",": out.append("\u2009"); i = j; continue
                 if name in (" ", "\n"): out.append(" "); i = j; continue
                 if name in ("&", "%", "$", "#", "_"): out.append(html.escape(name)); i = j; continue
-                if name in ("itshape", "small", "centering", "noindent"): i = j; continue
+                if name in ("itshape", "small", "centering", "noindent", "clearpage", "newpage"): i = j; continue
                 if name == "label":
                     _, j = req_arg(s, j); i = j; continue
                 if name == "footnote":    # numbered marker here; the text is listed under "Notes" (see footnotes())
