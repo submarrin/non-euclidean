@@ -1,7 +1,6 @@
 {
   "_comment": "Site-only text that differs from the thesis. Keep this list short: anything here is NOT updated from the thesis automatically.",
   "ch2": {
-    "after_title_html": "<div class=\"draft-banner progress\"><strong>In progress</strong><span>In review and being updated.</span></div>",
-    "bibliography_heading": "Bibliography (this chapter only)"
+    "after_title_html": "<div class=\"draft-banner progress\"><strong>In progress</strong><span>In review and being updated.</span></div>"
   }
 }
