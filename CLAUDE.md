@@ -36,6 +36,9 @@ fallback the page shows a short "being drawn" note. Prefer extending the convert
 
 ## Content rules (from the author)
 - Use only material from the thesis files. Citations exactly as in the thesis (biblatex alphabetic labels).
+- Citations show as a small raised "c"; the popup gives the citation. Citations that follow each other (only a
+  comma, semicolon or space between them) share one "c", and the popup lists them all, separated by commas, each
+  linked to its bibliography entry (`group_cites` in `tools/build_site.py`).
 - No historical facts that are not in the thesis; put ideas without a source in `TODO.md` under "To verify".
 - Portraits: public domain, with a credit line (Bolyai: CC BY-SA 3.0, kept with attribution).
 - Images that are on the website but not in the thesis PDF go in the right-hand portrait column, at portrait size

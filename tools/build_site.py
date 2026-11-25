@@ -225,6 +225,19 @@ class Chapter:
                        '" aria-label="Citation ' + html.escape(text, quote=True) + '">c</a>')
         return "".join(out)
 
+    @staticmethod
+    def group_cites(body):
+        """Citations that follow each other (nothing but a comma, semicolon or space between them)
+        share one "c"; the popup lists them all, each with its own link (data-more)."""
+        one = r'<a class="cite" href="([^"]*)" data-cite="([^"]*)" aria-label="[^"]*">c</a>'
+        def merge(m):
+            cites = re.findall(one, m.group(0))
+            (href, text), more = cites[0], cites[1:]
+            data = html.escape(json.dumps([[h, html.unescape(t)] for h, t in more], ensure_ascii=False), quote=True)
+            return ('<a class="cite" href="%s" data-cite="%s" data-more="%s" aria-label="Citations %s">c</a>'
+                    % (href, text, data, ", ".join(t for _, t in cites)))
+        return re.sub(one + r'(?:(?:\s|&nbsp;)*[,;]?(?:\s|&nbsp;)*' + one + ')+', merge, body)
+
     def ref(self, label, cref):
         if label not in self.labels:
             warn("unresolved reference: " + label); return "??"
@@ -558,6 +571,7 @@ def main():
             if m: bib_heading = m.group(1)
             else: warn("no \\printbibliography title in " + cfg["main"])
         body = ch.render(tex, ov) + "\n\n" + ch.footnotes() + ch.bibliography(ov.get("bibliography_heading", bib_heading))
+        body = ch.group_cites(body)
         stale = {}
         for label, code in ch.figs.items():
             h = tikz_hash(code)
