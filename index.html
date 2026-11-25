@@ -129,8 +129,8 @@ math[display="block"]{font-size:1.12em}
 a.cite{position:relative;display:inline;font-family:var(--f-ui);font-size:.62em;font-weight:600;vertical-align:super;line-height:0;margin-left:1px;color:var(--accent);text-decoration:none;cursor:pointer}
 a.cite::before{content:"";position:absolute;left:50%;top:50%;width:22px;height:22px;transform:translate(-50%,-50%)}
 a.cite + a.cite{margin-left:2px}
-.cite-pop{position:absolute;z-index:30;background:var(--pop-bg);color:var(--pop-ink);font-family:var(--f-ui);font-size:.8rem;line-height:1.3;padding:.35rem .6rem;border-radius:6px;white-space:nowrap;box-shadow:0 4px 18px rgba(0,0,0,.18);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
-.cite-pop a{color:inherit;font-weight:600;text-decoration:none;border-bottom:1px dotted currentColor}
+.cite-pop{position:absolute;z-index:30;background:var(--pop-bg);color:var(--pop-ink);font-family:var(--f-ui);font-size:.8rem;line-height:1.3;padding:.35rem .6rem;border-radius:6px;width:max-content;max-width:calc(100vw - 32px);box-sizing:border-box;box-shadow:0 4px 18px rgba(0,0,0,.18);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+.cite-pop a{white-space:nowrap;color:inherit;font-weight:600;text-decoration:none;border-bottom:1px dotted currentColor}
 .cite-pop a:hover{border-bottom-style:solid}
 a.xref{text-decoration:none;border-bottom:1px solid var(--rule)}
 a.xref:hover{border-bottom-color:var(--accent)}
@@ -444,11 +444,11 @@ footer{max-width:84rem;margin:0 auto;padding:1.5rem 16px 2.5rem;border-top:1px s
 
 <p>Cayley observed that in ordinary Euclidean geometry the absolute degenerates to a pair of points, the <em>circular points at infinity</em>. He means here the conic as a set of lines, which can degenerate into two pencils, real or imaginary. At the end of the memoir he wrote that metric geometry is a part of projective geometry <a class="cite" href="#bib-LR81" data-cite="[LR81, p. 72]" aria-label="Citation [LR81, p. 72]">c</a>.</p>
 
-<p>Laptev and Rozenfeld remark that Cayley “does not study the cases when the conic is real or decomposes into a pair of real pencils, leading to the geometries which are now called hyperbolic (geometry of Lobachevsky) and pseudo-Euclidean” <a class="cite" href="#bib-LR81" data-cite="[LR81, p. 72]" aria-label="Citation [LR81, p. 72]">c</a>. If the conic is real, the hyperbolic plane is its interior, and the absolute is the boundary of the model <a class="cite" href="#bib-LR81" data-cite="[LR81, p. 73]" aria-label="Citation [LR81, p. 73]">c</a>, <a class="cite" href="#bib-Bon12" data-cite="[Bon12, p. 158]" aria-label="Citation [Bon12, p. 158]">c</a>. Three choices of absolute thus give the geometries of this chapter: an imaginary conic gives elliptic geometry, the pair of circular points Euclidean geometry, and a real conic hyperbolic geometry. That the geometries of Lobachevsky and Riemann, like Euclid’s, can be regarded in this way as special cases of projective geometry followed from Cayley’s memoir after additions and clarifications by Klein in 1871 <a class="cite" href="#bib-LR81" data-cite="[LR81, p. 48]" aria-label="Citation [LR81, p. 48]">c</a>.</p>
+<p>Laptev and Rozenfeld remark that Cayley “does not study the cases when the conic is real or decomposes into a pair of real pencils, leading to the geometries which are now called hyperbolic (geometry of Lobachevsky) and pseudo-Euclidean” <a class="cite" href="#bib-LR81" data-cite="[LR81, p. 72]" aria-label="Citation [LR81, p. 72]">c</a>. If the conic is real, the hyperbolic plane is its interior, and the absolute is the boundary of the model <a class="cite" href="#bib-LR81" data-cite="[LR81, p. 73]" data-more="[[&quot;#bib-Bon12&quot;, &quot;[Bon12, p. 158]&quot;]]" aria-label="Citations [LR81, p. 73], [Bon12, p. 158]">c</a>. Three choices of absolute thus give the geometries of this chapter: an imaginary conic gives elliptic geometry, the pair of circular points Euclidean geometry, and a real conic hyperbolic geometry. That the geometries of Lobachevsky and Riemann, like Euclid’s, can be regarded in this way as special cases of projective geometry followed from Cayley’s memoir after additions and clarifications by Klein in 1871 <a class="cite" href="#bib-LR81" data-cite="[LR81, p. 48]" aria-label="Citation [LR81, p. 48]">c</a>.</p>
 
 <h3 id="s2-4-3" data-key="subsec:klein_model_history"><span class="no">2.4.3</span>Klein’s Projective Model and the Erlangen Programme (1871–1872)</h3>
 
-<p>Felix Klein (1849–1925) established the connection between Cayley’s projective metric and Lobachevsky’s geometry in his 1871 paper <i>Über die sogenannte nicht-euklidische Geometrie</i>: when Cayley’s absolute is a real conic, the part of the projective plane inside it is isometric to the Lobachevsky plane <a class="cite" href="#bib-LR81" data-cite="[LR81, p. 73]" aria-label="Citation [LR81, p. 73]">c</a>. In the Klein (Cayley–Klein) model <a class="cite" href="#bib-LR81" data-cite="[LR81, pp. 73–74]" aria-label="Citation [LR81, pp. 73–74]">c</a>, <a class="cite" href="#bib-Sos20" data-cite="[Sos20]" aria-label="Citation [Sos20]">c</a>:</p>
+<p>Felix Klein (1849–1925) established the connection between Cayley’s projective metric and Lobachevsky’s geometry in his 1871 paper <i>Über die sogenannte nicht-euklidische Geometrie</i>: when Cayley’s absolute is a real conic, the part of the projective plane inside it is isometric to the Lobachevsky plane <a class="cite" href="#bib-LR81" data-cite="[LR81, p. 73]" aria-label="Citation [LR81, p. 73]">c</a>. In the Klein (Cayley–Klein) model <a class="cite" href="#bib-LR81" data-cite="[LR81, pp. 73–74]" data-more="[[&quot;#bib-Sos20&quot;, &quot;[Sos20]&quot;]]" aria-label="Citations [LR81, pp. 73–74], [Sos20]">c</a>:</p>
 
 <ul>
   <li>The <em>hyperbolic plane</em> is the open unit disk $\DD = \{(x,y) : x^2+y^2 &lt; 1\}$.</li>
@@ -974,8 +974,13 @@ window.addEventListener("hashchange",function(){ go(location.hash); });
   function open(a){
     close();
     pop=document.createElement("div"); pop.className="cite-pop"; pop.setAttribute("role","tooltip");
-    const link=document.createElement("a"); link.href=a.getAttribute("href"); link.textContent=a.dataset.cite; link.title="Go to bibliography";
-    pop.appendChild(link); main.appendChild(pop); pop._for=a;
+    const cites=[[a.getAttribute("href"),a.dataset.cite]].concat(JSON.parse(a.dataset.more||"[]"));
+    cites.forEach(function(c,i){
+      const link=document.createElement("a"); link.href=c[0]; link.textContent=c[1]; link.title="Go to bibliography";
+      if(i) pop.append(", ");
+      pop.appendChild(link);
+    });
+    main.appendChild(pop); pop._for=a;
     const r=a.getBoundingClientRect(), w=pop.offsetWidth, vw=document.documentElement.clientWidth;
     let x=r.left+r.width/2-w/2; x=Math.max(16,Math.min(x,vw-w-16));
     pop.style.left=(x+scrollX)+"px"; pop.style.top=(r.bottom+8+scrollY)+"px";
